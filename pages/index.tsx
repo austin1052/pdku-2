@@ -42,11 +42,13 @@ const Home: NextPage = () => {
           <a href="" className={styles.card}>
             <h2>Hat</h2>
             <p>Ask me about my D&D campaign</p>
+            <button>Add to Cart</button>
           </a>
 
           <a href="" className={styles.card}>
             <h2>Shirt</h2>
             <p>Ask me about my D&D campaign</p>
+            <button>Add to Cart</button>
           </a>
         </div>
       </main>
