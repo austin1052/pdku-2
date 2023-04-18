@@ -11,13 +11,14 @@ export default function merch({ allProducts }: any) {
   );
 }
 
-const apiURL =
-  process.env.NODE_ENV === "development"
-    ? "http://localhost:3000/api/"
-    : "https://pdku.vercel.app/api/";
-
 export async function getStaticProps() {
-  const response = await fetch(`${apiURL}/products/printful`);
+  const response = await fetch(`https://api.printful.com/store/products`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${process.env.PRINTFUL_SECRET_KEY}`,
+    },
+  });
   const allProducts = await response.json();
   return {
     props: {
