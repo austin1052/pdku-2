@@ -89,12 +89,3 @@ export {}
 
 // curl --location --request GET 'https://api.printful.com/webhooks' \
 // --header 'Authorization: Bearer <PRINTFUL_SECRET_KEY>'
-
-// const product = await stripe.products.create({
-//   id,
-//   name,
-//   default_price_data: {
-//     currency: "USD",
-//     unit_amount_decimal: formatedPrice
-//   }
-// });
