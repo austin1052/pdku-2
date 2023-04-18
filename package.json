@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "webhook-init": "npx ts-node ./pages/api/webhooks/init",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -11,12 +12,17 @@
   "dependencies": {
     "@stripe/react-stripe-js": "^2.1.0",
     "@stripe/stripe-js": "^1.52.1",
+    "cors": "^2.8.5",
     "next": "13.3.0",
+    "next-connect": "^0.13.0",
+    "node-fetch": "^3.3.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "stripe": "^12.0.0"
+    "stripe": "^12.0.0",
+    "ts-node": "^10.9.1"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.13",
     "@types/node": "18.15.11",
     "@types/react": "18.0.34",
     "@types/react-dom": "18.0.11",

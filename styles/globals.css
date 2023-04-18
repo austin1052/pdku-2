@@ -1,3 +1,8 @@
+:root {
+  --primary: rgb(77, 255, 178);
+  --secondary: rgb(168, 88, 149)
+}
+
 html,
 body {
   padding: 0;

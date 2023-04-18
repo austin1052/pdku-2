@@ -85,6 +85,13 @@
   max-width: 300px;
 }
 
+.image {
+  position: relative !important;
+  object-fit: contain;
+  width: 100%;
+  height: unset;
+}
+
 .card:hover,
 .card:focus,
 .card:active {
@@ -101,6 +108,7 @@
   margin: 0;
   font-size: 1.25rem;
   line-height: 1.5;
+  position: relative;
 }
 
 .logo {
