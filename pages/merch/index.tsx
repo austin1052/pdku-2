@@ -14,7 +14,7 @@ export default function merch({ allProducts }: any) {
 const apiURL =
   process.env.NODE_ENV === "development"
     ? "http://localhost:3000/api/"
-    : "https://pdku.show/api/";
+    : "https://pdku.vercel.app/api/";
 
 export async function getStaticProps() {
   const response = await fetch(`${apiURL}/products/printful`);
