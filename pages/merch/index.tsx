@@ -27,3 +27,30 @@ export async function getStaticProps() {
     revalidate: 30,
   };
 }
+
+interface productVariant {
+  // this id is stored in stripe and used to get price ID
+  id: string;
+  color: string;
+  size: string;
+  price: number;
+}
+
+interface product {
+  // this product id is used to get product from printful
+  id: string;
+  name: string;
+  description: string[];
+  variants: [productVariant];
+  images: string[];
+}
+
+// create a collection for all products
+// create a doc for each product
+// to delete
+// use product ID returned from pritnful webhook to queary firestore for all stripe IDs
+// delete from stripe using id
+// delete variants doc and product doc from firestore
+
+// create items in firestore when adding to stripe
+//

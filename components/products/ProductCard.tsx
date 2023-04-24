@@ -8,9 +8,26 @@ const apiURL =
     ? "http://localhost:3000/api/"
     : "https://pdku.show/api/";
 
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "../../utils/firebase/firebaseConfig";
+
+// Add a new document in collection "cities"
+async function setData() {
+  console.log("ADD DATA");
+  console.log(db);
+  try {
+    const docRef = await addDoc(collection(db, "users"), {
+      first: "Jack",
+      last: "Dodge",
+      born: 1997,
+    });
+    console.log("Document written with ID: ", docRef.id);
+  } catch (e) {
+    console.error("Error adding document: ", e);
+  }
+}
+
 export default function ProductCard({ product }: any) {
-  const [stripePriceId, setStripePriceId] = useState();
-  const [selectedVariantId, setSelectedVariantId] = useState();
   const [productVariantData, setProductVariantData] = useState();
   const { id, name, thumbnail_url } = product;
   const formatedId = id.toString();
@@ -53,7 +70,7 @@ export default function ProductCard({ product }: any) {
       {productVariantData && (
         <DropdownMenu productVariantData={productVariantData} />
       )}
-      <button>add to cart</button>
+      <button onClick={setData}>add to cart</button>
     </div>
   );
 }

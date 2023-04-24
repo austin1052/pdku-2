@@ -11,15 +11,31 @@ async function getProductById(req: NextApiRequest, res: NextApiResponse) {
       }
   });
     const product = await response.json()
-    const productDetails = product.result.sync_variants.map((variant: any) => {
-      const { id, retail_price } = variant
-      const variantDetails = variant.product.name.split("(")[1].split(")")[0]
-      const color = variantDetails.split("/")[0].trim()
-      const size = variantDetails.split("/")[1].trim()
-      return {id, details: [ color, size], price: retail_price}
-    })
+    const productName = product.result.sync_product.name
+    const variants = product.result.sync_variants
 
-    res.status(product.code).send(productDetails)
+    const productDetails = variants.map((variant: any) => {
+      // console.log(variant);
+      let { id: variantId, name: variantName, retail_price, product: {image} } = variant
+
+      // stripe needs id as a string
+      variantId = variantId.toString()
+
+      // variant.product.name is set by printful
+      // Always looks like ---> Product Name (color / size) or Product Name (size) or Product Name (color/color/... / size) 
+      // the spaces are important " / " separates color and size. "/" seperates multiple of the same detail 
+      // variant details selects the part in parenthesis
+      const variantDetails = variant.product.name.split("(")[1].split(")")[0]
+      const detailsDivider = " / "
+
+      // returns -1 if there is no detailsDivider
+      const endOfColor = variantDetails.lastIndexOf(detailsDivider)
+      const color = endOfColor === -1 ? variantDetails : variantDetails.slice(0, endOfColor)
+      const size = endOfColor === -1 ? "" : variantDetails.slice(endOfColor + detailsDivider.length)
+      const formattedProduct = {variantId, variantName, productName, price: retail_price, size, color, image}
+      return formattedProduct
+    })
+    res.status(product.code).send([productName, productDetails])
   } catch (error: any) {
     res.send(error)
   }
