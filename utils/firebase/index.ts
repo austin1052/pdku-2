@@ -1,31 +1,35 @@
-import { productVariant } from "../../pages/api/webhooks";
+import { product, productVariant } from "../../pages/api/webhooks";
 import { doc, collection, getDocs, setDoc, updateDoc, deleteDoc } from "firebase/firestore"; 
 import { db } from "./firebaseConfig";
 
 // function to add new product to firestore
 
-export async function addProductToFirebase(product: productVariant) {
-  const {productId, variantId} = product
+export async function addProductToFirebase(product: product) {
+  const productRef = doc(db, "products", product.id)
+  await setDoc(productRef, product);
+}
+
+export async function addVariantToFirebase(productId: string, variant: productVariant) {
+  const { variantId } = variant
   try {
     const variantRef = doc(db, "products", productId, "variants", variantId)
-    await setDoc(variantRef, product);
-    const productRef = doc(db, "products", productId)
-    await setDoc(variantRef, product);
+    await setDoc(variantRef, variant);
   } catch(error: any) {
     console.log(error);
   }
 }
 
-export async function updateProductInFirebase(product: productVariant) {
-  const {productId, variantId} = product
+export async function updateVariantInFirebase(productId: string, variant: productVariant) {
+  const { variantId } = variant
   try {
     const variantRef = doc(db, "products", productId, "variants", variantId)
-    await updateDoc(variantRef, {...product});
+    await updateDoc(variantRef, {...variant});
   } catch(error: any) {
     console.log(error);
   }
 }
 
+// returns array of all variants for a product
 export async function getAllVariantDataFromFirebase(productId: string) {
   const variantsRef = collection(db, "products", productId, "variants");
   const querySnapshot = await getDocs(variantsRef);
@@ -36,6 +40,8 @@ export async function getAllVariantDataFromFirebase(productId: string) {
   return variantData
 }
 
+// returns array of variant IDs 
+// 
 export async function getAllVariantIdsFromFirebase(productId: string) {
   const variantsRef = collection(db, "products", productId, "variants");
   const querySnapshot = await getDocs(variantsRef);

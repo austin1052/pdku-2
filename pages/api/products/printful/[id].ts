@@ -13,8 +13,7 @@ async function getProductById(req: NextApiRequest, res: NextApiResponse) {
     const product = await response.json()
     const productName = product.result.sync_product.name
     const variants = product.result.sync_variants
-
-    const productDetails = variants.map((variant: any) => {
+    const variantData = variants.map((variant: any) => {
       // console.log(variant);
       let { id: variantId, name: variantName, retail_price, product: {image} } = variant
 
@@ -32,10 +31,11 @@ async function getProductById(req: NextApiRequest, res: NextApiResponse) {
       const endOfColor = variantDetails.lastIndexOf(detailsDivider)
       const color = endOfColor === -1 ? variantDetails : variantDetails.slice(0, endOfColor)
       const size = endOfColor === -1 ? "" : variantDetails.slice(endOfColor + detailsDivider.length)
-      const formattedProduct = {variantId, variantName, productName, price: retail_price, size, color, image}
+      const formattedProduct = {variantId, variantName, price: retail_price, size, color, image}
       return formattedProduct
     })
-    res.status(product.code).send([productName, productDetails])
+    const productData = {id, name: productName, image: variantData[0].image, price: variantData[0].price}
+    res.status(product.code).send([productData, variantData])
   } catch (error: any) {
     res.send(error)
   }

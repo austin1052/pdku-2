@@ -67,9 +67,9 @@ export default function ProductCard({ product }: any) {
         fill
       ></Image>
       <div className={styles.name}>{name}</div>
-      {productVariantData && (
+      {/* {productVariantData && (
         <DropdownMenu productVariantData={productVariantData} />
-      )}
+      )} */}
       <button onClick={setData}>add to cart</button>
     </div>
   );

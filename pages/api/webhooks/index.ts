@@ -15,43 +15,77 @@
 // curl --location --request GET 'https://api.printful.com/webhooks' \
 // --header 'Authorization: Bearer <PRINTFUL_SECRET_KEY>'
 
+
+// printful webhook req body
+// {
+//   type: 'product_updated',
+//   created: 1682373750,
+//   retries: 0,
+//   store: 10460317,
+//   data: {
+//     sync_product: {
+//       id: 306370990,
+//       external_id: '6446f6e9941921',
+//       name: 'Corduroy Cap! Woah!',
+//       variants: 4,
+//       synced: 4,
+//       thumbnail_url: 'https://files.cdn.printful.com/files/013/0131d6f621f3d186afd8fa78bce284cc_preview.png',
+//       is_ignored: false
+//     }
+//   }
+// }
+
+
 import { NextApiRequest, NextApiResponse } from 'next'
-import { addProductToFirebase, updateProductInFirebase, getAllVariantDataFromFirebase, getAllVariantIdsFromFirebase, deleteVariantFromFirebase } from '../../../utils/firebase';
+import { addVariantToFirebase, updateVariantInFirebase, getAllVariantDataFromFirebase, getAllVariantIdsFromFirebase, deleteVariantFromFirebase, addProductToFirebase } from '../../../utils/firebase'
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
+
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 
 const apiURL =
   process.env.NODE_ENV === "development"
     ? "http://localhost:3000/api/"
     : "https://pdku.show/api/";
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  console.log(req.body);
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  console.log(req.headers);
+  const formattedStoreId = req.body.store.toString()
+  if (formattedStoreId !== process.env.PRINTFUL_STORE_ID) {
+    console.log("NOT AUTHORIZED");
+    res.status(403).send({message: "You are not authorized to make this request"})
+  }
+
+  console.log("AUTHORIZED");
   if (req.body.type === "product_updated") {
     const id = req.body.data.sync_product.id.toString()
     syncProductWithStripe(id)
-    return
   }
   if (req.body.type === "product_deleted") {
     const id = req.body.data.sync_product.id.toString()
-    removeProductFromStripe(id)
-    return
+    // removeProductFromStripe(id)
   }
   res.send("200")
 }
 
+
 async function syncProductWithStripe(productId: string) {
 
   // get product data from printful
+  // productData is object with name, image, and price
+  // variantData is array of objects with variantId, variantName, color, size, price, image
   const response = await fetch(`${apiURL}/products/printful/${productId}`);
-  const productData = await response.json()
+  const [productData, variantData] = await response.json()
+
+  await addProductToFirebase(productData)
 
   // get array of variant ids from firebase
   // used after forEach to remove deleted products from stripe and firebase
   let allVariantIds = await getAllVariantIdsFromFirebase(productId)
   let availableProducts: string[] = []
-  console.log("Starting IDs", allVariantIds);
-  await Promise.all(productData.map(async (variant: productVariant) => {
+
+  await Promise.all(variantData.map(async (variant: productVariant) => {
     const { variantId, variantName, price, image } = variant
     const priceInPennies = Number(price) * 100
     // try to get stripe product. if it exists, check if values were updated
@@ -70,9 +104,9 @@ async function syncProductWithStripe(productId: string) {
               unit_amount_decimal: priceInPennies
             },
             images: [image] 
-          })
-          
-          addProductToFirebase({...variant, stripePriceId: stripeProduct.default_price, productId})
+          })  
+          const newVariant = {...variant, stripePriceId: stripeProduct.default_price}
+          addVariantToFirebase(productId, newVariant)
         } catch (error: any) {
           console.log("Error creating product:", variantName)
           console.error(error)
@@ -96,12 +130,13 @@ async function syncProductWithStripe(productId: string) {
       })
       await stripe.products.update(variantId, { default_price: updatedPrice.id })
       await stripe.prices.update(priceId, { active: false })
-      updateProductInFirebase({...variant, productId, stripePriceId: updatedPrice.id})
+      const updatedVariant = {...variant, stripePriceId: updatedPrice.id}
+      updateVariantInFirebase(productId, updatedVariant)
     }
   
     if (stripeProduct.name !== variantName) {
       await stripe.products.update(variantId, { name: variantName })
-      updateProductInFirebase({...variant, productId})
+      updateVariantInFirebase(productId, variant)
     }
 
     // if product is in printful, it will be removed from the allVariantIds array
@@ -134,14 +169,18 @@ async function removeProductFromStripe(productId: string) {
 export interface productVariant {
   color: string,
   image: string
-  productId: string
-  productName?: string,
   price: string,
   size: string,
   stripePriceId: string,
   variantId: string,
   variantName: string,
+}
 
+export interface product {
+  id: string,
+  name: string,
+  image: string
+  price: string,
 }
 
 export {}
