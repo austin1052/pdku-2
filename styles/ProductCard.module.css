@@ -14,7 +14,16 @@
   color: var(--primary);
 }
 
+/* .imageContainer {
+  max-height: 300px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+} */
+
 .image {
+  mix-blend-mode: normal;
   position: relative !important;
   object-fit: contain !important;
   height: unset !important;

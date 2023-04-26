@@ -1,17 +1,32 @@
 import { NextApiRequest, NextApiResponse } from "next"
+import { getAllVariantIdsFromFirebase } from "../../../../utils/firebase"
+
+async function getProduct(id: any) {
+  const response = await fetch(`https://api.printful.com/store/products/${id}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${process.env.PRINTFUL_SECRET_KEY}`
+    }
+  });
+  const product = await response.json()
+  return product
+}
 
 async function getProductById(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query
   try {
-    const response = await fetch(`https://api.printful.com/store/products/${id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.PRINTFUL_SECRET_KEY}`
-      }
-  });
-    const product = await response.json()
+    let product = await getProduct(id)
+
+    // thumbnail_url will be null on first request
+    // request product every 3 seconds until thumbnail_url is not null
+    // when thumbnail_url is not null, continue with formatting response
+    while (product.result.sync_product.thumbnail_url === null) {
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      product = await getProduct(id)
+    }
     const productName = product.result.sync_product.name
+    const productImage = product.result.sync_product.thumbnail_url
     const variants = product.result.sync_variants
     const variantData = variants.map((variant: any) => {
       // console.log(variant);
@@ -34,7 +49,7 @@ async function getProductById(req: NextApiRequest, res: NextApiResponse) {
       const formattedProduct = {variantId, variantName, price: retail_price, size, color, image}
       return formattedProduct
     })
-    const productData = {id, name: productName, image: variantData[0].image, price: variantData[0].price}
+    const productData = {id, name: productName, image: productImage, price: variantData[0].price}
     res.status(product.code).send([productData, variantData])
   } catch (error: any) {
     res.send(error)
