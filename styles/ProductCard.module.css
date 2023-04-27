@@ -1,33 +1,118 @@
 .container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  padding-top: 2rem;
+  font-family: Bitter;
+  max-inline-size: 1000px;
+  margin-inline: auto;
 }
 
 .card {
-  border: 1px solid white;
+  display: flex;
+  flex-direction: column;
+  border-radius: 6px;
   padding: 1rem;
-  margin: 1rem;
-  max-width: 300px;
+  margin-inline: 1rem;
+  margin-bottom: 2rem;
+  max-width: 100%;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
+  border: 1px solid var(--mid-light);
+  transition: 300ms;
+  cursor: pointer;
+}
+
+.card:hover {
+  border-color: var(--mid);
+}
+
+.detailsContainer {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .name {
-  color: var(--primary);
+  color: var(--dark);
+  font-size: 1.4rem;
+  font-weight: 600;
+  padding-bottom: 0.5rem;
 }
 
-/* .imageContainer {
-  max-height: 300px;
-  overflow: hidden;
+.priceContainer {
   display: flex;
-  justify-content: center;
-  align-items: center;
-} */
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: auto;
+}
+
+.price {
+  color: var(--primary);
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+.buyButton {
+ border: 1px solid var(--mid-light);
+ padding: 0.35rem 1.3rem;
+ border-radius: 5px;
+ color: var(--dark);
+ font-size: 1rem;
+ font-weight: 800;
+ transition: 300ms;
+}
+
+.buyButton:hover {
+  border-color: var(--mid);
+}
 
 .image {
-  mix-blend-mode: normal;
+  border-radius: 2px;
   position: relative !important;
   object-fit: contain !important;
   height: unset !important;
-  margin-bottom: 0.5rem;
+}
+
+@media (min-width: 480px) {
+  .container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .price {
+    font-size: 1.6rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+} 
+
+@media (prefers-color-scheme: dark) {
+  .card {
+    border-color: var(--primary-light);
+  }
+
+  .card:hover {
+    border-color: var(--primary);
+  }
+
+  .name {
+    color: var(--primary);
+  }
+
+  .price {
+  color: var(--mid);
+  }
+
+  .buyButton {
+    color: var(--primary);
+    border: 1px solid var(--primary-light);
+  }
+
+  .buyButton:hover {
+    border-color: var(--primary);
+  }
 }
 
 

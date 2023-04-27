@@ -71,11 +71,7 @@ export const addVariantToFirebase = functions.https.onRequest(async (req, res) =
   });
   
 export const getAllVariantDataFromFirebase = functions.https.onRequest(async (req, res) => {
-    if (!verifyAuth(req)) {
-      res.status(403).send({success: false, message: "Not Authorized"});
-    }
     const { productId } = req.body;
-    // res.send({success: true, productId})
     const variantsRef = db.collection("products").doc(productId).collection("variants");
     const snapshot = await variantsRef.get();
     const allVariants: productVariant[] = [];

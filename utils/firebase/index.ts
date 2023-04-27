@@ -65,13 +65,12 @@ export async function updateVariantInFirebase(token: string, productId: string, 
 }
 
 // returns array of all variants for a product
-export async function getAllVariantDataFromFirebase(token: string, productId: string) {
+export async function getAllVariantDataFromFirebase(productId: string) {
   try {
     const response = await fetch(`${cloudURL}/getAllVariantDataFromFirebase`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": token
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(productId)
     })

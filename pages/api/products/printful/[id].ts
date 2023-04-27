@@ -25,12 +25,27 @@ async function getProductById(req: NextApiRequest, res: NextApiResponse) {
       await new Promise(resolve => setTimeout(resolve, 3000));
       product = await getProduct(id)
     }
+
     const productName = product.result.sync_product.name
-    const productImage = product.result.sync_product.thumbnail_url
+    // const productImage = product.result.sync_variants[0].files[fileLength - 1].preview_url
     const variants = product.result.sync_variants
+    
+    let productImage: string | undefined = undefined
     const variantData = variants.map((variant: any) => {
-      // console.log(variant);
-      let { id: variantId, name: variantName, retail_price, product: {image} } = variant
+      // let { id: variantId, name: variantName, retail_price, product: {image}, files } = variant
+      let { id: variantId, name: variantName, retail_price, files } = variant
+      
+      let images: string[] = []
+      files.forEach((file: any) => {
+        if (file.type === "preview") {
+          console.log("SET IMAGE");
+          images.push(file.preview_url)
+          if (productImage === undefined) {
+            productImage = file.preview_url
+          }
+        }
+      })
+
 
       // stripe needs id as a string
       variantId = variantId.toString()
@@ -46,10 +61,11 @@ async function getProductById(req: NextApiRequest, res: NextApiResponse) {
       const endOfColor = variantDetails.lastIndexOf(detailsDivider)
       const color = endOfColor === -1 ? variantDetails : variantDetails.slice(0, endOfColor)
       const size = endOfColor === -1 ? "" : variantDetails.slice(endOfColor + detailsDivider.length)
-      const formattedProduct = {variantId, variantName, price: retail_price, size, color, image}
+      const formattedProduct = {variantId, variantName, price: retail_price, size, color, images}
       return formattedProduct
     })
     const productData = {id, name: productName, image: productImage, price: variantData[0].price}
+    console.log(productData);
     res.status(product.code).send([productData, variantData])
   } catch (error: any) {
     res.send(error)

@@ -84,11 +84,9 @@ async function syncProductWithStripe(token: string, productId: string) {
   // productData is object with name, image, and price
   // variantData is array of objects with variantId, variantName, color, size, price, image
   const response = await fetch(`${apiURL}/products/printful/${productId}`);
-  // const hehe = await response.json()
-  // console.log(hehe);
   const [productData, variantData] = await response.json()
-  console.log({productData});
-  console.log({variantData});
+  // console.log({productData});
+  // console.log({variantData});
 
   await addProductToFirebase(token, productData)
 
@@ -99,7 +97,7 @@ async function syncProductWithStripe(token: string, productId: string) {
   let availableProducts: string[] = []
 
   await Promise.all(variantData.length > 0 && variantData.map(async (variant: productVariant) => {
-    const { variantId, variantName, price, image } = variant
+    const { variantId, variantName, price, images } = variant
     const priceInPennies = Number(price) * 100
     // try to get stripe product. if it exists, check if values were updated
     // if it does not exist, create it in stripe
@@ -116,7 +114,7 @@ async function syncProductWithStripe(token: string, productId: string) {
               currency: "USD",
               unit_amount_decimal: priceInPennies
             },
-            images: [image] 
+            images 
           })  
           const newVariant = {...variant, stripePriceId: stripeProduct.default_price}
           addVariantToFirebase(token, productId, newVariant)
@@ -172,18 +170,10 @@ async function syncProductWithStripe(token: string, productId: string) {
     deleteVariantFromFirebase(token, productId, variantId)
   })
 }
-
-async function removeProductFromStripe(productId: string) {
-  console.log("remove from stripe function");
-  // use id to request all variants from firebase
-  // use variant IDs to archive products in stripe
-  // const variants = await getAllVariantDataFromFirebase(productId)
-  // console.log({variants});
-}
   
 export interface productVariant {
   color: string,
-  image: string
+  images: string[]
   price: string,
   size: string,
   stripePriceId: string,
