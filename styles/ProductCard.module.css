@@ -70,6 +70,7 @@
   position: relative !important;
   object-fit: contain !important;
   height: unset !important;
+  margin-bottom: 0.75rem;
 }
 
 @media (min-width: 480px) {

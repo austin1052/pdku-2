@@ -8,7 +8,7 @@ import * as functions from "firebase-functions";
 //   response.send("Hello from Firebase!");
 // });
 import * as admin from "firebase-admin";
-import {productVariant} from "../../pages/api/webhooks/other";
+import { productVariant } from "../../pages/api/webhooks";
 // import {doc, setDoc} from "firebase/firestore"
 
 admin.initializeApp();
