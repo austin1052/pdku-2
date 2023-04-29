@@ -27,7 +27,6 @@ async function getProductById(req: NextApiRequest, res: NextApiResponse) {
     }
 
     const productName = product.result.sync_product.name
-    // const productImage = product.result.sync_variants[0].files[fileLength - 1].preview_url
     const variants = product.result.sync_variants
     
     let productImage: string | undefined = undefined
@@ -38,7 +37,7 @@ async function getProductById(req: NextApiRequest, res: NextApiResponse) {
       let images: string[] = []
       files.forEach((file: any) => {
         if (file.type === "preview") {
-          console.log("SET IMAGE");
+          // console.log("SET IMAGE");
           images.push(file.preview_url)
           if (productImage === undefined) {
             productImage = file.preview_url
@@ -65,7 +64,7 @@ async function getProductById(req: NextApiRequest, res: NextApiResponse) {
       return formattedProduct
     })
     const productData = {id, name: productName, image: productImage, price: variantData[0].price}
-    console.log(productData);
+    // console.log(productData);
     res.status(product.code).send([productData, variantData])
   } catch (error: any) {
     res.send(error)

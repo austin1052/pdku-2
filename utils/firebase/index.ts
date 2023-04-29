@@ -1,3 +1,4 @@
+import { productV2 } from "../../pages/api/webhooks/other"
 import { product, productVariant } from "../../pages/api/webhooks";
 
 const cloudURL = "https://us-central1-pdku-e1ef3.cloudfunctions.net"
@@ -113,5 +114,67 @@ export async function deleteVariantFromFirebase(token: string, productId: string
     return deletedVariant
   } catch(error: any) {
       console.log(error);
+    }
+}
+
+
+// ******
+
+export async function addProductToFirebaseV2(token: string, product: productV2) {
+  try {
+    await fetch(`${cloudURL}/addProductToFirebaseV2`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": token
+      },
+      body: JSON.stringify({product})
+    })
+  } catch(error: any) {
+      console.log(error);
+    }
+}
+
+export async function deleteProductFromFirebaseV2(token: string, productId: string) {
+  try {
+    const response = await fetch(`${cloudURL}/deleteProductFromFirebaseV2`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": token
+      },
+      body: JSON.stringify({productId})
+    })
+    const deletedProduct = await response.json() 
+    return deletedProduct
+  } catch(error: any) {
+      console.log(error);
+    }
+}
+
+export async function getAllVariantIdsFromFirebaseV2(token: string, productId: string) {
+  try {
+    const response = await fetch(`${cloudURL}/getProduct`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": token
+      },
+      body: JSON.stringify({productId})
+    })
+    const data = await response.json()
+    console.log("DATA");
+    console.log(data);
+    if (data.success) {
+      const variants = data.product.variants
+      const variantIds = variants.map((variant: productVariant) => {
+        return variant.variantId
+      })
+      return variantIds
+    }
+    return []
+  } catch(error: any) {
+      console.log(error);
+      return []
     }
 }

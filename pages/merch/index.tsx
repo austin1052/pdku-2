@@ -4,7 +4,7 @@ import { db } from "../../utils/firebase/firebaseConfig";
 import { getDocs, collection } from "firebase/firestore";
 
 export default function merch({ allProducts }: any) {
-  console.log(allProducts);
+  // console.log(allProducts);
   return (
     <div className={styles.container}>
       {allProducts.map((product: product) => {
