@@ -150,12 +150,13 @@
   }
 
   .colorSelector {
-    width: 25px;
-    height: 25px;
+    width: 28px;
+    height: 28px;
   }
 
   .sizeSelector {
     font-size: 1rem;
+    padding: 0.2rem 0.5rem;
   }
 } 
 
