@@ -7,8 +7,8 @@ export default function merch({ allProducts }: any) {
   // console.log(allProducts);
   return (
     <div className={styles.container}>
-      {allProducts.map((product: product) => {
-        return <ProductCard product={product} key={product.id} />;
+      {allProducts.map((product: Product, index: number) => {
+        return <ProductCard product={product} index={index} key={product.id} />;
       })}
     </div>
   );
@@ -46,22 +46,22 @@ export async function getStaticProps() {
 //   };
 // }
 
-interface productVariant {
-  // this id is stored in stripe and used to get price ID
-  id: string;
-  color: string;
-  size: string;
-  price: number;
-}
+// interface productVariant {
+//   // this id is stored in stripe and used to get price ID
+//   id: string;
+//   color: string;
+//   size: string;
+//   price: number;
+// }
 
-interface product {
-  // this product id is used to get product from printful
-  id: string;
-  image: string;
-  name: string;
-  price: string;
-  description?: string[];
-}
+// interface product {
+//   // this product id is used to get product from printful
+//   id: string;
+//   image: string;
+//   name: string;
+//   price: string;
+//   description?: string[];
+// }
 
 // create a collection for all products
 // create a doc for each product

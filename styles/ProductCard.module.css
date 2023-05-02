@@ -2,11 +2,13 @@
   display: grid;
   padding-top: 2rem;
   font-family: Bitter;
-  max-inline-size: 1000px;
+  /* max-inline-size: 1000px; */
   margin-inline: auto;
+  max-width: 1000px;
 }
 
 .card {
+  position: relative;
   display: flex;
   flex-direction: column;
   border-radius: 6px;
@@ -25,10 +27,10 @@
 }
 
 .detailsContainer {
-  flex-grow: 1;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  flex-grow: 1;
 }
 
 .name {
@@ -36,6 +38,17 @@
   font-size: 1.4rem;
   font-weight: 600;
   padding-bottom: 0.5rem;
+}
+
+.colorSelectionContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.colorBox {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
 }
 
 .priceContainer {
@@ -52,8 +65,9 @@
 }
 
 .buyButton {
+ background: unset;
  border: 1px solid var(--mid-light);
- padding: 0.35rem 1.3rem;
+ padding: 0.5rem 1.5rem;
  border-radius: 5px;
  color: var(--dark);
  font-size: 1rem;
@@ -66,7 +80,7 @@
 }
 
 .image {
-  border-radius: 2px;
+  border-radius: 6px;
   position: relative !important;
   object-fit: contain !important;
   height: unset !important;

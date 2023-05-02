@@ -40,6 +40,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   if ((requestType === "product_updated" && numberOfVariants === 0) || (requestType === "product_deleted")) {
+    let allVariantIds = await getAllVariantIdsFromFirebaseV2(token, id)
+
+    allVariantIds.forEach(async (variantId: string) => {
+      if (variantId !== undefined) {
+        await stripe.products.update(variantId, { active: false })
+      }
+    })
     deleteProductFromFirebaseV2(token, id)
     // send "200" back to printful. If you just send status 200 printful will keep retrying the request
     res.send("200")
@@ -47,8 +54,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   if (requestType === "product_updated") {
-    syncProductWithStripe(token, id)
     res.send("200")
+    // printful takes some time before it sets product images
+    // if product images are null there will be an error adding the product to stripe
+    // this line makes the function wait 60 seconds before continuing
+    await new Promise(resolve => setTimeout(resolve, 60000));
+    syncProductWithStripe(token, id)
     return
   }
 }
@@ -57,13 +68,14 @@ async function syncProductWithStripe(token: string, productId: string) {
 
   // get product data from printful
   // productData is object with name, image, and price
-  // variantData is array of objects with variantId, variantName, color, size, price, image
-  const response = await fetch(`${apiURL}/products/printful/${productId}`);
+  // variantData is array of objects with variantId, variantName, color, colorCode, size, price, image
+
+  const response = await fetch(`${apiURL}/printful/products/${productId}`);
   const [productData, variantData] = await response.json()
 
   let allVariantIds = await getAllVariantIdsFromFirebaseV2(token, productId)
 
-  const formattedVariants = await Promise.all(variantData.map(async (variant: productVariant) => {
+  const formattedVariants = await Promise.all(variantData.map(async (variant: ProductVariant) => {
     const { variantId, variantName, price, images } = variant
     const priceInPennies = Number(price) * 100
 
@@ -133,7 +145,9 @@ async function syncProductWithStripe(token: string, productId: string) {
   // archive deleted variants on stripe
   const deletedVariants = allVariantIds
   deletedVariants.forEach(async (variantId: string) => {
+    if (variantId !== undefined) {
     await stripe.products.update(variantId, { active: false })
+    }
   })
 
   // add variants to product object
@@ -141,31 +155,6 @@ async function syncProductWithStripe(token: string, productId: string) {
 
   // add updated/new product to firebase, this will overwrite the previous one with the updated information
   addProductToFirebaseV2(token, updatedProduct)
-}
-  
-export interface productVariant {
-  color: string,
-  images: string[]
-  price: string,
-  size: string,
-  stripePriceId?: string,
-  variantId: string,
-  variantName: string,
-}
-
-export interface product {
-  id: string,
-  name: string,
-  image: string
-  price: string,
-}
-
-export interface productV2 {
-  id: string,
-  name: string,
-  image: string,
-  price: string,
-  variants: productVariant
 }
 
 export {}

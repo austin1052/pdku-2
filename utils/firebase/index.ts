@@ -168,6 +168,7 @@ export async function getAllVariantIdsFromFirebaseV2(token: string, productId: s
     if (data.success) {
       const variants = data.product.variants
       const variantIds = variants.map((variant: productVariant) => {
+        if (!variant) return
         return variant.variantId
       })
       return variantIds
