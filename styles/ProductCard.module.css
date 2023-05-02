@@ -37,7 +37,7 @@
   color: var(--dark);
   font-size: 1.4rem;
   font-weight: 600;
-  margin-bottom: 0.8rem;
+  margin-bottom: 1rem;
 }
 
 .colorSelectionContainer {
@@ -46,13 +46,13 @@
   flex-wrap: wrap;
   margin-bottom: 1rem;
   margin-top: auto;
-  padding-top: 0.8rem;
+  padding-top: 1rem;
   border-top: 2px solid var(--mid-light);
 }
 
 .colorSelector {
-  width: 30px;
-  height: 30px;
+  width: 35px;
+  height: 35px;
   margin-right: 10px;
   border: 2px solid var(--mid-light);
   /* border-width: 1px;
@@ -82,7 +82,7 @@
   border: 2px solid var(--mid-light);
   border-radius: 4px;
   text-align: center;
-  padding: 0.1rem 0.4rem;
+  padding: 0.25rem 0.65rem;
   font-size: 1.2rem;
   font-weight: 800;
   transition: 300ms;
@@ -100,6 +100,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-top: 0.5rem;
 }
 
 .price {

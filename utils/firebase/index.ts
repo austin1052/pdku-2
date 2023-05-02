@@ -1,9 +1,6 @@
-import { productV2 } from "../../pages/api/webhooks/other"
-import { product, productVariant } from "../../pages/api/webhooks";
-
 const cloudURL = "https://us-central1-pdku-e1ef3.cloudfunctions.net"
 
-export async function addProductToFirebase(token: string, product: product) {
+export async function addProductToFirebase(token: string, product: Product) {
   try {
     await fetch(`${cloudURL}/addProductToFirebase`, {
       method: "POST",
@@ -35,7 +32,7 @@ export async function deleteProductFromFirebase(token: string, productId: string
     }
 }
 
-export async function addVariantToFirebase(token: string, productId: string, variant: productVariant) {
+export async function addVariantToFirebase(token: string, productId: string, variant: ProductVariant) {
   try {
     await fetch(`${cloudURL}/addVariantToFirebase`, {
       method: "POST",
@@ -50,7 +47,7 @@ export async function addVariantToFirebase(token: string, productId: string, var
     }
 }
 
-export async function updateVariantInFirebase(token: string, productId: string, variant: productVariant) {
+export async function updateVariantInFirebase(token: string, productId: string, variant: ProductVariant) {
   try {
     await fetch(`${cloudURL}/updateVariantInFirebase`, {
       method: "POST",
@@ -120,7 +117,7 @@ export async function deleteVariantFromFirebase(token: string, productId: string
 
 // ******
 
-export async function addProductToFirebaseV2(token: string, product: productV2) {
+export async function addProductToFirebaseV2(token: string, product: Product) {
   try {
     await fetch(`${cloudURL}/addProductToFirebaseV2`, {
       method: "POST",
@@ -167,7 +164,7 @@ export async function getAllVariantIdsFromFirebaseV2(token: string, productId: s
     console.log(data);
     if (data.success) {
       const variants = data.product.variants
-      const variantIds = variants.map((variant: productVariant) => {
+      const variantIds = variants.map((variant: ProductVariant) => {
         if (!variant) return
         return variant.variantId
       })
