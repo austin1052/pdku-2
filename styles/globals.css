@@ -30,7 +30,7 @@
   --primary-light: rgb(61, 208, 144, 0.2);
   --secondary: rgb(168, 88, 149);
   --dark: rgb(21, 21, 21);
-  --mid: rgb(51, 51, 51);
+  --mid: rgb(61, 61, 61);
   --mid-light: rgb(51, 51, 51, 0.2);
   --light: rgb(223, 251, 240);
 }
@@ -41,12 +41,7 @@ body {
   margin: 0;
   font-size: 16px;
   min-height: 100vh;
-
-  /* light theme */
   background-color: var(--light);
-
-  /* dark theme */
-  /* background-color: var(--dark); */
 }
 
 a {

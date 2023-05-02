@@ -61,10 +61,14 @@ async function getProductById(req: NextApiRequest, res: NextApiResponse) {
           if (productImage === undefined) {
             productImage = file.preview_url
           }
-        } else {
-          console.log(files);
         }
       })
+
+      // if there are no mockup images returned, set image to product image
+      // this image will be a blank product with no design
+      if (images.length === 0) {
+        images.push(variant.product.image)
+      }
 
       // stripe needs id as a string
       variantId = variantId.toString()

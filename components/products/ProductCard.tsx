@@ -5,6 +5,7 @@ import DropdownMenu from "../DropdownMenu";
 import styles from "../../styles/ProductCard.module.css";
 import { db } from "../../utils/firebase/firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
+import getVariantDetails from "../../pages/api/printful/variants/[id]";
 
 const apiURL =
   process.env.NODE_ENV === "development"
@@ -14,9 +15,11 @@ const apiURL =
 export default function ProductCard({ product, index }: ProductCardProps) {
   const { image, name, price, variants } = product;
   const formattedPrice = Math.ceil(Number(price));
-  const [showOptions, setShowOptions] = useState(false);
   const [productSizes, setProductSizes] = useState<string[]>();
   const [productColors, setProductColors] = useState<string[][]>();
+  const [previewImage, setPreviewImage] = useState(image);
+  const [selectedColor, setSelectedColor] = useState("");
+  const [selectedSize, setSelectedSize] = useState("");
 
   // if only one color or one size,
 
@@ -38,16 +41,76 @@ export default function ProductCard({ product, index }: ProductCardProps) {
         colorNames.push(variant.color);
         colorNamesAndCodes.push([variant.color, variant.colorCode]);
       }
-      // const uniqueColors: Set<string[]> = new Set(colors);
       setProductColors(colorNamesAndCodes);
     });
   }, [variants]);
 
+  useEffect(() => {
+    if (selectedColor !== "") {
+      variants.forEach((variant) => {
+        if (variant.color === selectedColor) {
+          setPreviewImage(variant.images[0]);
+        }
+      });
+    }
+  }, [selectedColor, variants]);
+
+  // useEffect(() => {
+  //   if (productSizes !== undefined && productSizes.length <= 1) {
+
+  //   }
+  // }, [productSizes]);
+
+  function handleColorSection(color: string) {
+    if (selectedColor === color) {
+      setSelectedColor("");
+    } else {
+      setSelectedColor(color);
+    }
+  }
+
+  function handleSizeSection(size: string) {
+    if (selectedSize === size) {
+      setSelectedSize("");
+    } else {
+      setSelectedSize(size);
+    }
+  }
+
+  function handleAddToCart() {
+    variants.forEach((variant) => {
+      const { color, size } = variant;
+      //@ts-ignore
+      if (productSizes.length > 1 && productColors.length > 1) {
+        if (color === selectedColor && size === selectedSize) {
+          console.log(variant.stripePriceId);
+        }
+      }
+      //@ts-ignore
+      if (productSizes.length <= 1 && productColors.length > 1) {
+        if (color === selectedColor) {
+          console.log(variant.stripePriceId);
+        }
+      }
+      //@ts-ignore
+      if (productSizes.length > 1 && productColors.length <= 1) {
+        if (size === selectedSize) {
+          console.log(variant.stripePriceId);
+        }
+      }
+      //@ts-ignore
+      if (productSizes.length <= 1 && productColors.length <= 1) {
+        console.log(variant.stripePriceId);
+      }
+    });
+    setSelectedColor("");
+    setSelectedSize("");
+  }
+
   return (
     <div className={styles.card}>
-      {/* <div className={styles.imageContainer}> */}
       <Image
-        src={image}
+        src={previewImage}
         className={styles.image}
         alt={name}
         // width={300}
@@ -56,36 +119,53 @@ export default function ProductCard({ product, index }: ProductCardProps) {
         sizes="(max-width: 768px) 100vw"
         priority={index <= 6}
       />
-      {/* </div> */}
       <div className={styles.detailsContainer}>
         <div className={styles.name}>{name}</div>
         <div className={styles.colorSelectionContainer}>
-          {showOptions &&
-            productColors &&
+          {productColors && productColors.length > 1 ? (
             productColors.map((color, i) => {
               return (
                 <div
                   key={i}
-                  style={{ backgroundColor: "red" }}
-                  className={styles.colorBox}
+                  style={{ backgroundColor: `${color[1]}` }}
+                  className={
+                    color[0] === selectedColor
+                      ? `${styles.colorSelector} ${styles.selected}`
+                      : `${styles.colorSelector}`
+                  }
+                  title={color[0]}
+                  onClick={() => handleColorSection(color[0])}
                 ></div>
+              );
+            })
+          ) : (
+            <div className={styles.colorPlaceholder}></div>
+          )}
+        </div>
+        <div className={styles.sizeSelectionContainer}>
+          {productSizes &&
+            productSizes.length > 1 &&
+            productSizes.map((size, i) => {
+              return (
+                <div
+                  key={i}
+                  className={
+                    size === selectedSize
+                      ? `${styles.sizeSelector} ${styles.selected}`
+                      : `${styles.sizeSelector}`
+                  }
+                  onClick={() => handleSizeSection(size)}
+                >
+                  {size}
+                </div>
               );
             })}
         </div>
         <div className={styles.priceContainer}>
           <div className={styles.price}>${formattedPrice}</div>
-          {showOptions ? (
-            <>
-              <button className={styles.buyButton}>add to cart</button>
-            </>
-          ) : (
-            <button
-              onClick={() => setShowOptions(true)}
-              className={styles.buyButton}
-            >
-              buy
-            </button>
-          )}
+          <button onClick={handleAddToCart} className={styles.buyButton}>
+            add to cart
+          </button>
         </div>
       </div>
     </div>
