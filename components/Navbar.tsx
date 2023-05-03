@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { RiShoppingBagLine as CartIcon } from "react-icons/ri";
+import { BsBag } from "react-icons/bs";
 import { IconContext } from "react-icons";
 import styles from "../styles/Navbar.module.css";
 
@@ -36,7 +37,8 @@ export default function Navbar() {
     <div className={styles.topNav}>
       <div className={styles.cartIconContainer}>
         <IconContext.Provider value={{ className: styles.cartIcon }}>
-          <CartIcon />
+          {/* <CartIcon /> */}
+          <BsBag />
         </IconContext.Provider>
         <div className={styles.cartQuantity}>{cartQuantity}</div>
       </div>
