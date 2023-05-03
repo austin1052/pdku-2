@@ -17,7 +17,7 @@
 }
 
 .cartIcon {
-  font-size: 2.7rem;
+  font-size: 2.4rem;
   color: var(--primary);
   transition: 300ms;
 }
@@ -28,16 +28,17 @@
   font-size: 1rem;
   font-weight: 800;
   color: var(--primary);
-  transform: translateY(7px) translateX(0.5px);
+  transform: translateY(5px) translateX(0.5px);
   cursor: pointer;
   transition: 300ms;
 }
 
 .cartIconContainer:hover .cartIcon {
-  font-size: 2.8rem;
+  font-size: 2.6rem;
   color: var(--light);
 }
 
 .cartIconContainer:hover .cartQuantity {
+  font-size: 1.1rem;
   color: var(--light);
 }
