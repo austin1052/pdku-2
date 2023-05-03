@@ -3,35 +3,39 @@ import { RiShoppingBagLine as CartIcon } from "react-icons/ri";
 import { BsBag } from "react-icons/bs";
 import { IconContext } from "react-icons";
 import styles from "../styles/Navbar.module.css";
+import { getCartFromFirebase } from "../utils/firebase/cart";
 
 export default function Navbar() {
   const [cartQuantity, setCartQuantity] = useState(0);
 
-  // useEffect(() => {
-  //   window.addEventListener("storage", () => {
-  //     console.log("STORAGE");
-  //     setCartQuantity(cartQuantity);
-  //   });
-  // }, [cartQuantity]);
-
-  console.log(cartQuantity);
-
-  function updateCartQuantity() {
-    let cart = localStorage.getItem("cart");
-    const parsedCart = typeof cart === "string" ? JSON.parse(cart) : [];
-    const itemSum = parsedCart.reduce((acc: number, cur: CartItem) => {
-      return acc + cur.quantity;
-    }, 0);
-    console.log("STORAGE");
-    setCartQuantity(itemSum);
-  }
+  // function updateCartQuantity() {
+  //   let cart = localStorage.getItem("cart");
+  //   const parsedCart = typeof cart === "string" ? JSON.parse(cart) : [];
+  //   const itemSum = parsedCart.reduce((acc: number, cur: CartItem) => {
+  //     return acc + cur.quantity;
+  //   }, 0);
+  //   setCartQuantity(itemSum);
+  // }
 
   useEffect(() => {
-    updateCartQuantity();
+    const token = localStorage.getItem("token");
+    if (token !== null) {
+      getCartQuantityFromFirebase(token);
+    }
     window.addEventListener("storage", () => {
-      updateCartQuantity();
+      if (token !== null) {
+        getCartQuantityFromFirebase(token);
+      }
     });
   }, []);
+
+  async function getCartQuantityFromFirebase(token: string) {
+    const cart = await getCartFromFirebase(token);
+    const itemSum = cart.reduce((acc: number, cur: CartItem) => {
+      return acc + cur.quantity;
+    }, 0);
+    setCartQuantity(itemSum);
+  }
 
   return (
     <div className={styles.topNav}>

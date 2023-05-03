@@ -113,7 +113,7 @@ export default function ProductCard({
           className={styles.image}
           alt={name}
           fill
-          sizes="(max-width: 768px) 100vw"
+          sizes="(max-width: 480px) 100vw, (max-width: 768px) 50vw, (min-width: 769px) 30vw"
           priority={index <= 6}
         />
       </div>

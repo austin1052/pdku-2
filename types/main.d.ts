@@ -18,8 +18,12 @@ interface Product {
 }
 
 interface CartItem {
+  variantId: string,
+  price: string,
   stripePriceId: string,
-  quantity: number
+  quantity: number,
+  image: string,
+  name: string
 }
 
 type Cart = CartItem[];

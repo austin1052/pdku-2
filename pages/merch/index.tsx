@@ -1,9 +1,14 @@
 import { useState, useEffect } from "react";
+import { v4 as uuid } from "uuid";
 import ProductCard from "../../components/products/ProductCard";
 import CartBanner from "../../components/CartBanner";
 import styles from "../../styles/ProductCard.module.css";
 import { db } from "../../utils/firebase/firebaseConfig";
 import { getDocs, collection } from "firebase/firestore";
+import {
+  getCartFromFirebase,
+  addCartToFirebase,
+} from "../../utils/firebase/cart";
 
 export default function MerchPage({ allProducts }: any) {
   const [cart, setCart] = useState<Cart>();
@@ -13,28 +18,63 @@ export default function MerchPage({ allProducts }: any) {
   >();
 
   useEffect(() => {
-    let localCart = localStorage.getItem("cart");
-    if (typeof localCart === "string") {
-      setCart(JSON.parse(localCart));
+    const token = localStorage.getItem("token");
+    async function populateCart() {
+      if (token !== null) {
+        const cart = await getCartFromFirebase(token);
+        setCart(cart);
+      }
     }
+    populateCart();
   }, []);
 
-  function addItemToCart(variant: ProductVariant) {
-    const { stripePriceId } = variant;
-    console.log("add");
-    const cartCopy = cart ? [...cart] : [];
-    const existingItem = cartCopy.find(
-      (item) => item.stripePriceId === stripePriceId
-    );
-    if (existingItem !== undefined) {
-      existingItem.quantity += 1;
-    } else {
-      cartCopy.push({ stripePriceId, quantity: 1 });
-    }
-    setCart(cartCopy);
+  console.log({ cart });
+
+  async function addItemToCart(variant: ProductVariant) {
+    const {
+      stripePriceId,
+      variantId,
+      variantName: name,
+      price,
+      images,
+    } = variant;
+
+    const addedProduct: CartItem = {
+      variantId,
+      name,
+      price,
+      image: images[0],
+      stripePriceId,
+      quantity: 1,
+    };
+
     setAddedProduct(variant);
-    const stringCart = JSON.stringify(cartCopy);
-    localStorage.setItem("cart", stringCart);
+
+    const localToken = localStorage.getItem("token");
+    // console.log({ localToken });
+    if (localToken === null) {
+      const token = uuid();
+      localStorage.setItem("token", token);
+      // create in firestore
+      addCartToFirebase(token, [addedProduct]);
+      setCart([addedProduct]);
+    } else {
+      const token = localStorage.getItem("token");
+      if (token !== null) {
+        const cart = await getCartFromFirebase(token);
+        const existingItem = cart.find(
+          (item: CartItem) => item.stripePriceId === stripePriceId
+        );
+        if (existingItem !== undefined) {
+          existingItem.quantity += 1;
+        } else {
+          cart.push(addedProduct);
+        }
+
+        addCartToFirebase(token, cart);
+        setCart(cart);
+      }
+    }
 
     // this event is needed to update the quantity show in the cart icon
     window.dispatchEvent(new Event("storage"));
