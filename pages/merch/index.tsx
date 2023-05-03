@@ -35,6 +35,9 @@ export default function MerchPage({ allProducts }: any) {
     setAddedProduct(variant);
     const stringCart = JSON.stringify(cartCopy);
     localStorage.setItem("cart", stringCart);
+
+    // this event is needed to update the quantity show in the cart icon
+    window.dispatchEvent(new Event("storage"));
     setShowCartBanner(true);
     setTimeout(() => {
       setShowCartBanner(false);

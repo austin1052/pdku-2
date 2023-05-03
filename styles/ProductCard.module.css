@@ -1,8 +1,6 @@
 .container {
   display: grid;
-  /* margin-top: 1rem; */
   font-family: Bitter;
-  /* max-inline-size: 1000px; */
   margin: 0 auto;
   max-width: 1000px;
 }

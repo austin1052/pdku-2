@@ -8,13 +8,36 @@
   /* border-bottom: 3px solid var(--mid-light); */
 }
 
+.cartIconContainer {
+  position: relative;
+  /* z-index: 10; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .cartIcon {
-  font-size: 2.4rem;
+  font-size: 2.7rem;
   color: var(--primary);
   transition: 300ms;
 }
 
-.cartIcon:hover {
-  font-size: 2.6rem;
-  /* color: var(--light); */
+.cartQuantity {
+  position: absolute;
+  font-family: Bitter;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--primary);
+  transform: translateY(7px) translateX(0.5px);
+  cursor: pointer;
+  transition: 300ms;
+}
+
+.cartIconContainer:hover .cartIcon {
+  font-size: 2.8rem;
+  color: var(--light);
+}
+
+.cartIconContainer:hover .cartQuantity {
+  color: var(--light);
 }

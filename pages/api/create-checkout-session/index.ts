@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         line_items: [
           {
             // need to get price id from stripe
-            price: "price_1MvX0hLpLN5jLLuR2Om6deDG",
+            price: "price_1N36bBLpLN5jLLuRcFPfla7D",
             quantity: 1,
           },
         ],
@@ -28,10 +28,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         //     }
         //   }
         // ],          
-        success_url: `${req.headers.origin}/?success=true`,
-        cancel_url: `${req.headers.origin}/?canceled=true`,
+        // success_url: `${req.headers.origin}/?success=true`,
+        // cancel_url: `${req.headers.origin}/?canceled=true`,
+        success_url: `https://pdku.vercel.app/?success=true`,
+        cancel_url: `https://pdku.vercel.app/?canceled=true`,
       });
-      res.redirect(303, session.url);
+      // res.redirect(303, session.url);
+      res.send({message: "Success", url: session.url});
+
     } catch (error: any) {
       res.status(error.statusCode || 500).json(error.message);
     }

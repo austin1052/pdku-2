@@ -27,7 +27,7 @@ const apiURL =
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  console.log(req.body);
+  console.log(req);
   const token = req.body.store.toString()
   const id = req.body.data.sync_product.id.toString()
   const numberOfVariants = req.body.data.sync_product.variants
