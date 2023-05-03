@@ -1,27 +1,27 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, SetStateAction } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import DropdownMenu from "../DropdownMenu";
 import styles from "../../styles/ProductCard.module.css";
-import { db } from "../../utils/firebase/firebaseConfig";
-import { collection, getDocs } from "firebase/firestore";
-import getVariantDetails from "../../pages/api/printful/variants/[id]";
 
-const apiURL =
-  process.env.NODE_ENV === "development"
-    ? "http://localhost:3000/api/"
-    : "https://pdku.show/api/";
+interface ProductCardProps {
+  product: Product;
+  index: number;
+  addItemToCart: any;
+  setShowCartBanner: React.Dispatch<SetStateAction<boolean>>;
+}
 
-export default function ProductCard({ product, index }: ProductCardProps) {
+export default function ProductCard({
+  product,
+  index,
+  addItemToCart,
+  setShowCartBanner,
+}: ProductCardProps) {
   const { image, name, price, variants } = product;
   const formattedPrice = Math.ceil(Number(price));
   const [productSizes, setProductSizes] = useState<string[]>();
   const [productColors, setProductColors] = useState<string[][]>();
   const [previewImage, setPreviewImage] = useState(image);
-  const [selectedColor, setSelectedColor] = useState("");
+  const [selectedColor, setSelectedColor] = useState(product.variants[0].color);
   const [selectedSize, setSelectedSize] = useState("");
-
-  // if only one color or one size,
 
   // set colors and sizes when buy is clicked
   // loop through variants
@@ -55,12 +55,6 @@ export default function ProductCard({ product, index }: ProductCardProps) {
     }
   }, [selectedColor, variants]);
 
-  // useEffect(() => {
-  //   if (productSizes !== undefined && productSizes.length <= 1) {
-
-  //   }
-  // }, [productSizes]);
-
   function handleColorSection(color: string) {
     if (selectedColor === color) {
       setSelectedColor("");
@@ -83,42 +77,46 @@ export default function ProductCard({ product, index }: ProductCardProps) {
       //@ts-ignore
       if (productSizes.length > 1 && productColors.length > 1) {
         if (color === selectedColor && size === selectedSize) {
-          console.log(variant.stripePriceId);
+          addItemToCart(variant);
         }
       }
       //@ts-ignore
       if (productSizes.length <= 1 && productColors.length > 1) {
         if (color === selectedColor) {
-          console.log(variant.stripePriceId);
+          addItemToCart(variant);
         }
       }
       //@ts-ignore
       if (productSizes.length > 1 && productColors.length <= 1) {
         if (size === selectedSize) {
-          console.log(variant.stripePriceId);
+          addItemToCart(variant);
         }
       }
-      //@ts-ignore
+      // @ts-ignore
       if (productSizes.length <= 1 && productColors.length <= 1) {
-        console.log(variant.stripePriceId);
+        addItemToCart(variant);
       }
     });
-    setSelectedColor("");
+    setSelectedColor(product.variants[0].color);
     setSelectedSize("");
+    // setShowCartBanner(true);
+    // setTimeout(() => {
+    //   setShowCartBanner(false);
+    // }, 7000);
   }
 
   return (
     <div className={styles.card}>
-      <Image
-        src={previewImage}
-        className={styles.image}
-        alt={name}
-        // width={300}
-        // height={300}
-        fill
-        sizes="(max-width: 768px) 100vw"
-        priority={index <= 6}
-      />
+      <div className={styles.imageContainer}>
+        <Image
+          src={previewImage}
+          className={styles.image}
+          alt={name}
+          fill
+          sizes="(max-width: 768px) 100vw"
+          priority={index <= 6}
+        />
+      </div>
       <div className={styles.detailsContainer}>
         <div className={styles.name}>{name}</div>
         <div className={styles.colorSelectionContainer}>
@@ -163,21 +161,11 @@ export default function ProductCard({ product, index }: ProductCardProps) {
         </div>
         <div className={styles.priceContainer}>
           <div className={styles.price}>${formattedPrice}</div>
-          <button onClick={handleAddToCart} className={styles.buyButton}>
+          <button onClick={handleAddToCart} className={styles.addToCartButton}>
             add to cart
           </button>
         </div>
       </div>
     </div>
   );
-}
-
-interface ProductCardProps {
-  product: Product;
-  index: number;
-}
-
-interface Colors {
-  color: string;
-  colorCode: string;
 }

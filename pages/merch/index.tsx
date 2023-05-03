@@ -1,14 +1,64 @@
+import { useState, useEffect } from "react";
 import ProductCard from "../../components/products/ProductCard";
+import CartBanner from "../../components/CartBanner";
 import styles from "../../styles/ProductCard.module.css";
 import { db } from "../../utils/firebase/firebaseConfig";
 import { getDocs, collection } from "firebase/firestore";
 
-export default function merch({ allProducts }: any) {
-  // console.log(allProducts);
+export default function MerchPage({ allProducts }: any) {
+  const [cart, setCart] = useState<Cart>();
+  const [showCartBanner, setShowCartBanner] = useState(false);
+  const [addedProduct, setAddedProduct] = useState<
+    ProductVariant | undefined
+  >();
+
+  useEffect(() => {
+    let localCart = localStorage.getItem("cart");
+    if (typeof localCart === "string") {
+      setCart(JSON.parse(localCart));
+    }
+  }, []);
+
+  function addItemToCart(variant: ProductVariant) {
+    const { stripePriceId } = variant;
+    console.log("add");
+    const cartCopy = cart ? [...cart] : [];
+    const existingItem = cartCopy.find(
+      (item) => item.stripePriceId === stripePriceId
+    );
+    if (existingItem !== undefined) {
+      existingItem.quantity += 1;
+    } else {
+      cartCopy.push({ stripePriceId, quantity: 1 });
+    }
+    setCart(cartCopy);
+    setAddedProduct(variant);
+    const stringCart = JSON.stringify(cartCopy);
+    localStorage.setItem("cart", stringCart);
+    setShowCartBanner(true);
+    setTimeout(() => {
+      setShowCartBanner(false);
+    }, 7000);
+  }
+
   return (
     <div className={styles.container}>
+      {showCartBanner && (
+        <CartBanner
+          product={addedProduct}
+          setShowCartBanner={setShowCartBanner}
+        />
+      )}
       {allProducts.map((product: Product, index: number) => {
-        return <ProductCard product={product} index={index} key={product.id} />;
+        return (
+          <ProductCard
+            product={product}
+            index={index}
+            addItemToCart={addItemToCart}
+            setShowCartBanner={setShowCartBanner}
+            key={product.id}
+          />
+        );
       })}
     </div>
   );
@@ -28,47 +78,3 @@ export async function getStaticProps() {
     revalidate: 30,
   };
 }
-
-// export async function getStaticProps() {
-//   const response = await fetch(`https://api.printful.com/store/products`, {
-//     method: "GET",
-//     headers: {
-//       "Content-Type": "application/json",
-//       Authorization: `Bearer ${process.env.PRINTFUL_SECRET_KEY}`,
-//     },
-//   });
-//   const allProducts = await response.json();
-//   return {
-//     props: {
-//       allProducts,
-//     },
-//     revalidate: 30,
-//   };
-// }
-
-// interface productVariant {
-//   // this id is stored in stripe and used to get price ID
-//   id: string;
-//   color: string;
-//   size: string;
-//   price: number;
-// }
-
-// interface product {
-//   // this product id is used to get product from printful
-//   id: string;
-//   image: string;
-//   name: string;
-//   price: string;
-//   description?: string[];
-// }
-
-// create a collection for all products
-// create a doc for each product
-// to delete
-// use product ID returned from pritnful webhook to queary firestore for all stripe IDs
-// delete from stripe using id
-// delete variants doc and product doc from firestore
-
-// create items in firestore when adding to stripe
-//

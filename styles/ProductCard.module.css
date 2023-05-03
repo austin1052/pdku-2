@@ -1,9 +1,9 @@
 .container {
   display: grid;
-  padding-top: 2rem;
+  /* margin-top: 1rem; */
   font-family: Bitter;
   /* max-inline-size: 1000px; */
-  margin-inline: auto;
+  margin: 0 auto;
   max-width: 1000px;
 }
 
@@ -13,13 +13,13 @@
   flex-direction: column;
   border-radius: 6px;
   padding: 1rem;
-  margin-inline: 0.5rem;
-  margin-bottom: 2rem;
+  margin: 0 0.5rem 1.5rem;
   max-width: 100%;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
-  border: 2px solid var(--mid-light);
+  border: 3px solid var(--mid-light);
   transition: 300ms;
   cursor: pointer;
+  overflow: hidden;
 }
 
 .detailsContainer {
@@ -40,7 +40,6 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  margin-bottom: 1rem;
   margin-top: auto;
   padding-top: 1rem;
   border-top: 2px solid var(--mid-light);
@@ -50,16 +49,15 @@
   width: 35px;
   height: 35px;
   margin-right: 10px;
-  border: 2px solid var(--mid-light);
-  /* border-width: 1px;
-  border-style: solid; */
+  margin-bottom: 1rem;
+  border: 3px solid var(--mid-light);
   border-radius: 4px;
   transition: 300ms;
   padding: 5px;
 }
 
 .colorSelector:hover {
-  border: 2px solid var(--mid);
+  border-color: var(--mid);
 }
 
 .colorPlaceholder {
@@ -70,12 +68,12 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  margin-bottom: 1rem;
 }
 
 .sizeSelector {
   margin-right: 10px;
-  border: 2px solid var(--mid-light);
+  margin-bottom: 1rem;
+  border: 3px solid var(--mid-light);
   border-radius: 4px;
   text-align: center;
   padding: 0.25rem 0.65rem;
@@ -103,12 +101,12 @@
   color: var(--primary);
   font-size: 1.6rem;
   font-weight: 800;
-  transform: translateY(3px)
+  transform: translateY(2px)
 }
 
-.buyButton {
+.addToCartButton {
  background: unset;
- border: 2px solid var(--primary);
+ border: 3px solid var(--primary);
  padding: 0.4rem 0.6rem;
  border-radius: 5px;
  color: var(--dark);
@@ -117,9 +115,16 @@
  transition: 300ms;
 }
 
-.buyButton:hover {
+.addToCartButton:hover {
   /* border-color: var(--mid); */
   background-color: var(--primary-light);
+}
+
+.imageContainer {
+  position: relative;
+  overflow: hidden;
+  border-radius: 6px;
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
 }
 
 .image {
@@ -127,17 +132,19 @@
   position: relative !important;
   object-fit: contain !important;
   height: unset !important;
+  display: block;
   margin-bottom: 0.75rem;
+  transition: 800ms;
 }
 
 @media (min-width: 480px) {
   .card {
-    margin-inline: 1rem;
+    margin: 0 0.75rem 1.5rem;
   }
 
   /* only want hover effect for card on desktop */
   .card:hover {
-    border-color: var(--mid);
+    border-color: var(--primary);
   }
 
   .container {
@@ -152,13 +159,17 @@
 /* only want hover effect for card on desktop */
 @media (min-width: 480px) and (prefers-color-scheme: dark) {
   .card:hover {
-    border-color: var(--primary);
+    border-color: var(--mid);
   }
 }
 
 @media (min-width: 768px) {
   .container {
     grid-template-columns: repeat(3, 1fr);
+  }
+
+  .imageContainer:hover .image {
+    transform: scale(1.05);
   }
 
   .colorSelector {
@@ -168,25 +179,21 @@
 
   .sizeSelector {
     font-size: 1rem;
-    padding: 0.2rem 0.5rem;
+    padding: 0.1rem 0.4rem;
   }
 } 
 
 @media (prefers-color-scheme: dark) {
-  .card {
-    border-color: var(--primary-light);
-  }
-
   .name {
     color: var(--primary);
   }
-
+  
   .colorSelectionContainer {
-    border-color: var(--mid);
+    border-color: var(--mid-light);
   }
   
   .colorSelector {
-    border: 2px solid var(--mid)
+    border-color: var(--mid)
   }
 
   .colorSelector:hover {
@@ -213,12 +220,12 @@
   color: var(--mid);
   }
 
-  .buyButton {
+  .addToCartButton {
     color: var(--primary);
-    border: 1px solid var(--primary-light);
+    border-color: var(--primary-light);
   }
 
-  .buyButton:hover {
+  .addToCartButton:hover {
     border-color: var(--primary);
   }
 }

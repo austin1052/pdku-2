@@ -1,0 +1,11 @@
+.footer {
+  display: flex;
+  justify-content: center;
+  /* border-top: 3px solid var(--mid-light); */
+  padding: 2rem;
+}
+
+.logoContainer > img {
+  height: 120px;
+  width: auto;
+}

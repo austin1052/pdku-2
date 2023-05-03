@@ -4,7 +4,7 @@ interface ProductVariant {
   images: string[]
   price: string,
   size: string,
-  stripePriceId?: string,
+  stripePriceId: string,
   variantId: string,
   variantName: string,
 }
@@ -16,3 +16,10 @@ interface Product {
   price: string,
   variants: ProductVariant[]
 }
+
+interface CartItem {
+  stripePriceId: string,
+  quantity: number
+}
+
+type Cart = CartItem[];
