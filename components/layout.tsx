@@ -6,7 +6,7 @@ export default function Layout({ children }: any) {
   return (
     <>
       <Head>
-        <link rel="shortcut icon" href="/images/logo-primary.png" />
+        <link rel="shortcut icon" href="/images/favicon2.png" />
         <title>Please Don&apos;t Kill Us: An Interactive D&D Adventure</title>
       </Head>
       <Navbar />

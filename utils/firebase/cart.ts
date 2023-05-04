@@ -9,8 +9,7 @@ export async function addCartToFirebase(token: string, cart: Cart) {
   };
   const cartRef = doc(db, "carts", token);
   try {
-    const res = await setDoc(cartRef, cartData);
-    console.log(res);
+    await setDoc(cartRef, cartData);
   } catch (error) {
     console.log("ERROR");
     console.log(error);

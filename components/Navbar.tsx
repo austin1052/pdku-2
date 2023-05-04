@@ -22,7 +22,12 @@ export default function Navbar() {
     if (token !== null) {
       getCartQuantityFromFirebase(token);
     }
+  }, []);
+
+  useEffect(() => {
     window.addEventListener("storage", () => {
+      const token = localStorage.getItem("token");
+      console.log({ token });
       if (token !== null) {
         getCartQuantityFromFirebase(token);
       }

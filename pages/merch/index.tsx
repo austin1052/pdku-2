@@ -51,33 +51,28 @@ export default function MerchPage({ allProducts }: any) {
     setAddedProduct(variant);
 
     const localToken = localStorage.getItem("token");
-    // console.log({ localToken });
     if (localToken === null) {
       const token = uuid();
       localStorage.setItem("token", token);
-      // create in firestore
       addCartToFirebase(token, [addedProduct]);
       setCart([addedProduct]);
+      window.dispatchEvent(new Event("storage"));
     } else {
-      const token = localStorage.getItem("token");
-      if (token !== null) {
-        const cart = await getCartFromFirebase(token);
-        const existingItem = cart.find(
-          (item: CartItem) => item.stripePriceId === stripePriceId
-        );
-        if (existingItem !== undefined) {
-          existingItem.quantity += 1;
-        } else {
-          cart.push(addedProduct);
-        }
-
-        addCartToFirebase(token, cart);
-        setCart(cart);
+      const cart = await getCartFromFirebase(localToken);
+      const existingItem = cart.find(
+        (item: CartItem) => item.stripePriceId === stripePriceId
+      );
+      if (existingItem !== undefined) {
+        existingItem.quantity += 1;
+      } else {
+        cart.push(addedProduct);
       }
+      window.dispatchEvent(new Event("storage"));
+      addCartToFirebase(localToken, cart);
+      setCart(cart);
     }
 
     // this event is needed to update the quantity show in the cart icon
-    window.dispatchEvent(new Event("storage"));
     setShowCartBanner(true);
     setTimeout(() => {
       setShowCartBanner(false);
