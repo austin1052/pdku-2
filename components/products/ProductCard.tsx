@@ -6,14 +6,12 @@ interface ProductCardProps {
   product: Product;
   index: number;
   addItemToCart: any;
-  setShowCartBanner: React.Dispatch<SetStateAction<boolean>>;
 }
 
 export default function ProductCard({
   product,
   index,
   addItemToCart,
-  setShowCartBanner,
 }: ProductCardProps) {
   const { image, name, price, variants } = product;
   const formattedPrice = Math.ceil(Number(price));

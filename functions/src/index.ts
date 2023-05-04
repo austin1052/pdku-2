@@ -74,3 +74,36 @@ export const getProduct = functions.https.onRequest(async (req, res) => {
     res.status(200).send({success: true, product: product.data()})
   }
 })
+
+interface CartItem {
+  variantId: string,
+  price: string,
+  stripePriceId: string,
+  quantity: number,
+  image: string,
+  name: string
+}
+
+export const addToCart = functions.https.onCall(async (data, context) => {
+  const { token, addedProduct } = data;
+  const cartRef = db.collection('carts').doc(token);
+  const cartDoc = await cartRef.get();
+  if (cartDoc.exists) {
+    const lineItems = cartDoc.data()?.lineItems;
+    const existingItem = lineItems.find((item: CartItem) => item.variantId === addedProduct.variantId);
+    if (existingItem) {
+      existingItem.quantity += 1;
+    } else {
+      lineItems.push(addedProduct);
+    }
+    await cartRef.update({lineItems});
+  } else {
+    const cartData = {
+      email: null,
+      created: new Date(),
+      lineItems: [addedProduct]
+    };
+    await cartRef.set(cartData);
+  }
+  return {success: true, message: "item added to cart" }
+});

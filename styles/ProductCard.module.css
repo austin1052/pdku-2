@@ -18,6 +18,7 @@
   transition: 300ms;
   cursor: pointer;
   overflow: hidden;
+  /* background: var(--light); */
 }
 
 .detailsContainer {

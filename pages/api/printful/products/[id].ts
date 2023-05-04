@@ -77,7 +77,6 @@ async function getProductById(req: NextApiRequest, res: NextApiResponse) {
       return formattedProduct
     }))
     const productData = {id, name: productName, image: productImage, price: variantData[0].price}
-    console.log(variantData);
     res.status(product.code).send([productData, variantData])
   } catch (error: any) {
     res.send(error)

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { RiShoppingBagLine as CartIcon } from "react-icons/ri";
+import Link from "next/link";
 import { BsBag } from "react-icons/bs";
 import { IconContext } from "react-icons";
 import styles from "../styles/Navbar.module.css";
@@ -25,9 +25,8 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    window.addEventListener("storage", () => {
+    window.addEventListener("addCartItem", () => {
       const token = localStorage.getItem("token");
-      console.log({ token });
       if (token !== null) {
         getCartQuantityFromFirebase(token);
       }
@@ -44,13 +43,13 @@ export default function Navbar() {
 
   return (
     <div className={styles.topNav}>
-      <div className={styles.cartIconContainer}>
+      <Link href="/merch/cart" className={styles.cartIconContainer}>
         <IconContext.Provider value={{ className: styles.cartIcon }}>
           {/* <CartIcon /> */}
           <BsBag />
         </IconContext.Provider>
         <div className={styles.cartQuantity}>{cartQuantity}</div>
-      </div>
+      </Link>
     </div>
   );
 }

@@ -3,32 +3,17 @@ import { v4 as uuid } from "uuid";
 import ProductCard from "../../components/products/ProductCard";
 import CartBanner from "../../components/CartBanner";
 import styles from "../../styles/ProductCard.module.css";
-import { db } from "../../utils/firebase/firebaseConfig";
-import { getDocs, collection } from "firebase/firestore";
-import {
-  getCartFromFirebase,
-  addCartToFirebase,
-} from "../../utils/firebase/cart";
+import { getAllProductsFromFirebase } from "../../utils/firebase/cart";
+import { getFunctions, httpsCallable } from "firebase/functions";
+
+const functions = getFunctions();
+const addToCart = httpsCallable(functions, "addToCart");
 
 export default function MerchPage({ allProducts }: any) {
-  const [cart, setCart] = useState<Cart>();
   const [showCartBanner, setShowCartBanner] = useState(false);
   const [addedProduct, setAddedProduct] = useState<
     ProductVariant | undefined
   >();
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    async function populateCart() {
-      if (token !== null) {
-        const cart = await getCartFromFirebase(token);
-        setCart(cart);
-      }
-    }
-    populateCart();
-  }, []);
-
-  console.log({ cart });
 
   async function addItemToCart(variant: ProductVariant) {
     const {
@@ -54,25 +39,14 @@ export default function MerchPage({ allProducts }: any) {
     if (localToken === null) {
       const token = uuid();
       localStorage.setItem("token", token);
-      addCartToFirebase(token, [addedProduct]);
-      setCart([addedProduct]);
-      window.dispatchEvent(new Event("storage"));
+      await addToCart({ token, addedProduct });
     } else {
-      const cart = await getCartFromFirebase(localToken);
-      const existingItem = cart.find(
-        (item: CartItem) => item.stripePriceId === stripePriceId
-      );
-      if (existingItem !== undefined) {
-        existingItem.quantity += 1;
-      } else {
-        cart.push(addedProduct);
-      }
-      window.dispatchEvent(new Event("storage"));
-      addCartToFirebase(localToken, cart);
-      setCart(cart);
+      await addToCart({ token: localToken, addedProduct });
     }
 
-    // this event is needed to update the quantity show in the cart icon
+    // this event is needed to update the quantity in the cart icon
+    window.dispatchEvent(new Event("addCartItem"));
+
     setShowCartBanner(true);
     setTimeout(() => {
       setShowCartBanner(false);
@@ -93,7 +67,6 @@ export default function MerchPage({ allProducts }: any) {
             product={product}
             index={index}
             addItemToCart={addItemToCart}
-            setShowCartBanner={setShowCartBanner}
             key={product.id}
           />
         );
@@ -103,12 +76,7 @@ export default function MerchPage({ allProducts }: any) {
 }
 
 export async function getStaticProps() {
-  const querySnapshot = await getDocs(collection(db, "products"));
-  const allProducts: any[] = [];
-  querySnapshot.forEach((doc) => {
-    // doc.data() is never undefined for query doc snapshots
-    allProducts.push(doc.data());
-  });
+  const allProducts = await getAllProductsFromFirebase();
   return {
     props: {
       allProducts,
