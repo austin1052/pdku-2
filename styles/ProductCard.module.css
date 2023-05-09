@@ -101,21 +101,6 @@
   transform: translateY(2px)
 }
 
-/* .addToCartButton {
- background: unset;
- border: 3px solid var(--primary);
- padding: 0.4rem 0.6rem;
- border-radius: 5px;
- color: var(--dark);
- font-size: 1rem;
- font-weight: 800;
- transition: 300ms;
-} */
-
-/* .addToCartButton:hover {
-  background-color: var(--primary-light);
-} */
-
 .imageContainer {
   position: relative;
   overflow: hidden;

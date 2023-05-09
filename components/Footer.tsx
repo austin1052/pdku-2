@@ -8,6 +8,9 @@ export default function Footer() {
       <div className={styles.logoContainer}>
         <Image src={logo} alt="skull logo" />
       </div>
+      <div>About</div>
+      <div>Campaigns</div>
+      <div>Merch</div>
     </footer>
   );
 }

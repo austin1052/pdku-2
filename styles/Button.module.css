@@ -14,3 +14,12 @@
  .button:hover {
   background-color: var(--primary-light);
 }
+
+.button:disabled {
+  color: var(--mid-light);
+  border-color: var(--mid-light);
+}
+
+.button:disabled:hover {
+  background-color: transparent;
+}

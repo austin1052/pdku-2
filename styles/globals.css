@@ -83,6 +83,17 @@ a {
   margin: 0;
 }
 
+.page-container {
+  position: relative;
+  min-height: 100vh;
+}
+
+main {
+  /* margin-bottom: 3rem; */
+
+  padding-bottom: 6rem;
+}
+
 @media (prefers-color-scheme: dark) {
   html, body {
     color-scheme: dark;

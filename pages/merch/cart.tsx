@@ -59,7 +59,12 @@ export default function Cart({ countryList, shippingRegions }: CartProps) {
     setRegionValue(region);
   }, [countryValue]);
 
-  function createCheckoutSession() {}
+  async function createCheckoutSession() {
+    const sessions = await fetch("/api/create-checkout-session", {
+      method: "POST",
+      body: JSON.stringify(regionValue),
+    });
+  }
 
   const country = countryValue.split("-")[0];
   const region = countryValue.split("-")[1];

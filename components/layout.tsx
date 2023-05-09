@@ -9,9 +9,11 @@ export default function Layout({ children }: any) {
         <link rel="shortcut icon" href="/images/favicon2.png" />
         <title>Please Don&apos;t Kill Us: An Interactive D&D Adventure</title>
       </Head>
-      <Navbar />
-      <main>{children}</main>
-      <Footer />
+      <div className="page-container">
+        <Navbar />
+        <main>{children}</main>
+        <Footer />
+      </div>
     </>
   );
 }

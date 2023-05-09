@@ -98,10 +98,6 @@ export default function ProductCard({
     });
     setSelectedColor(product.variants[0].color);
     setSelectedSize("");
-    // setShowCartBanner(true);
-    // setTimeout(() => {
-    //   setShowCartBanner(false);
-    // }, 7000);
   }
 
   return (

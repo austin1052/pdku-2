@@ -23,7 +23,7 @@ export async function getAllProductsFromFirebase() {
   return allProducts;
 }
 
-
+// export async function 
 
 export async function getShippingRegionsFromFirebase() {
   const shippingRef = doc(db, "shipping", "regions");

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { v4 as uuid } from "uuid";
 import ProductCard from "../../components/products/ProductCard";
 import CartBanner from "../../components/CartBanner";
@@ -14,8 +14,6 @@ export default function MerchPage({ allProducts }: any) {
   const [addedProduct, setAddedProduct] = useState<
     ProductVariant | undefined
   >();
-
-  console.log("render");
 
   async function addItemToCart(variant: ProductVariant) {
     const {
@@ -37,8 +35,8 @@ export default function MerchPage({ allProducts }: any) {
       quantity: 1,
     };
 
-    setAddedProduct(variant);
-    setShowCartBanner(true);
+    // setAddedProduct(variant);
+    // setShowCartBanner(true);
 
     const localToken = localStorage.getItem("token");
     if (localToken === null) {
@@ -48,6 +46,9 @@ export default function MerchPage({ allProducts }: any) {
     } else {
       await addToCart({ token: localToken, addedProduct });
     }
+
+    setAddedProduct(variant);
+    setShowCartBanner(true);
 
     // this event is needed to update the quantity in the cart icon
     window.dispatchEvent(new Event("addCartItem"));
@@ -65,6 +66,20 @@ export default function MerchPage({ allProducts }: any) {
           setShowCartBanner={setShowCartBanner}
         />
       )}
+      {/* {isLoading ? (
+        <div>Loading...</div>
+      ) : (
+        allProducts.map((product: Product, index: number) => {
+          return (
+            <ProductCard
+              product={product}
+              index={index}
+              addItemToCart={addItemToCart}
+              key={product.id}
+            />
+          );
+        })
+      )} */}
       {allProducts.map((product: Product, index: number) => {
         return (
           <ProductCard
