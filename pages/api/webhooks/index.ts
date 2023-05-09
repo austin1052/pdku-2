@@ -27,22 +27,24 @@ const apiURL =
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  console.log(req);
   const token = req.body.store.toString()
   const id = req.body.data.sync_product.id.toString()
   const numberOfVariants = req.body.data.sync_product.variants
   const requestType = req.body.type
+  console.log(req.body);
 
   if (token !== process.env.PRINTFUL_STORE_ID) {
     console.log("NOT AUTHORIZED");
-    res.status(403).send({message: "You are not authorized to make this request"})
+    res.status(403).send({messsage: "You are not authorized to make this request"})
     return
   }
 
   if ((requestType === "product_updated" && numberOfVariants === 0) || (requestType === "product_deleted")) {
     let allVariantIds = await getAllVariantIdsFromFirebaseV2(token, id)
 
+    
     allVariantIds.forEach(async (variantId: string) => {
+    await new Promise(resolve => setTimeout(resolve, 50))
       if (variantId !== undefined) {
         await stripe.products.update(variantId, { active: false })
       }
@@ -75,9 +77,25 @@ async function syncProductWithStripe(token: string, productId: string) {
 
   let allVariantIds = await getAllVariantIdsFromFirebaseV2(token, productId)
 
-  const formattedVariants = await Promise.all(variantData.map(async (variant: ProductVariant) => {
+  let requestAmount = 0
+
+  async function mapWithDelay(array: ProductVariant[], callback: any, delay: number) {
+    for (let i = 0; i < array.length; i++) {
+      await callback(array[i]);
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+
+
+  const formattedVariants: ProductVariant[] = []
+  await mapWithDelay(variantData, async (variant: ProductVariant) => {
+
+  // const formattedVariants = await Promise.all(variantData.map(async (variant: ProductVariant) => {
     const { variantId, variantName, price, images } = variant
     const priceInPennies = Number(price) * 100
+
+    // stripe has a rate limit of 25 requests per second. This makes each request wait 50ms before running 
+    // await new Promise(resolve => setTimeout(resolve, 1000))
 
     // if product is still in printful, its variant ID will be removed from this list
     // List of remaing variant IDs is used later to archive deleted variants from stripe
@@ -90,10 +108,21 @@ async function syncProductWithStripe(token: string, productId: string) {
     // if it does not exist, create it in stripe
     let stripeProduct
     try {
+      const time = new Date()
+
+      requestAmount++
+      console.log({requestAmount})
+      console.log("retrieve", variantId, time)
+
       stripeProduct = await stripe.products.retrieve(variantId)
     } catch (error: any) {
       if (error.code === "resource_missing") {
         try {
+
+          requestAmount++
+          console.log({requestAmount})
+          console.log("create")
+
           const stripeProduct = await stripe.products.create({
             id: variantId,
             name: variantName,
@@ -104,7 +133,8 @@ async function syncProductWithStripe(token: string, productId: string) {
             images 
           })  
           const newVariant = {...variant, stripePriceId: stripeProduct.default_price}
-          return newVariant
+          // return newVariant
+          formattedVariants.push(newVariant);
         } catch (error: any) {
           console.log("Error creating product:", variantName)
           console.error(error)
@@ -117,10 +147,16 @@ async function syncProductWithStripe(token: string, productId: string) {
     }
   
     const priceId = stripeProduct.default_price
+
+    requestAmount++
+    console.log({requestAmount})
+    console.log("retrieve")
+
     const stripePrice = await stripe.prices.retrieve(priceId)
     const priceUnitAmount = stripePrice.unit_amount
   
     if (priceUnitAmount !== priceInPennies) {
+      requestAmount++
       const updatedPrice = await stripe.prices.create({
         unit_amount: priceInPennies,
         currency: 'usd',
@@ -129,27 +165,42 @@ async function syncProductWithStripe(token: string, productId: string) {
       await stripe.products.update(variantId, { default_price: updatedPrice.id })
       await stripe.prices.update(priceId, { active: false })
       const updatedVariant = {...variant, stripePriceId: updatedPrice.id}
-      return updatedVariant
+      // return updatedVariant
+      formattedVariants.push(updatedVariant);
+
     }
   
     if (stripeProduct.name !== variantName) {
+
+      requestAmount++
+      console.log({requestAmount})
+      console.log("update")
+
+
       await stripe.products.update(variantId, { name: variantName })
     }
 
     // if product is in printful, it will be removed from the allVariantIds array
     // after map is finished, only deleted products will be left in the array
 
-      return {...variant, stripePriceId: stripeProduct.default_price}
-  }))
+      // return {...variant, stripePriceId: stripeProduct.default_price}
+      formattedVariants.push({...variant, stripePriceId: stripeProduct.default_price});
+
+  }, 50)
 
   // archive deleted variants on stripe
   const deletedVariants = allVariantIds
   deletedVariants.forEach(async (variantId: string) => {
+
+    requestAmount++
+    console.log({requestAmount})
+    console.log("delete")
+    await new Promise(resolve => setTimeout(resolve, 50))
     if (variantId !== undefined) {
     await stripe.products.update(variantId, { active: false })
     }
   })
-
+console.log({requestAmount})
   // add variants to product object
   const updatedProduct = {...productData, variants: formattedVariants}
 

@@ -1,4 +1,5 @@
 import { useState, useEffect, SetStateAction } from "react";
+import Button from "../Button";
 import Image from "next/image";
 import styles from "../../styles/ProductCard.module.css";
 
@@ -39,8 +40,8 @@ export default function ProductCard({
         colorNames.push(variant.color);
         colorNamesAndCodes.push([variant.color, variant.colorCode]);
       }
-      setProductColors(colorNamesAndCodes);
     });
+    setProductColors(colorNamesAndCodes);
   }, [variants]);
 
   useEffect(() => {
@@ -159,9 +160,10 @@ export default function ProductCard({
         </div>
         <div className={styles.priceContainer}>
           <div className={styles.price}>${formattedPrice}</div>
-          <button onClick={handleAddToCart} className={styles.addToCartButton}>
+          <Button text="add to cart" onClick={handleAddToCart} />
+          {/* <button onClick={handleAddToCart} className={styles.addToCartButton}>
             add to cart
-          </button>
+          </button> */}
         </div>
       </div>
     </div>

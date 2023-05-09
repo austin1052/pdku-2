@@ -1,0 +1,16 @@
+.button {
+  background: unset;
+  border: 3px solid var(--mid);
+  padding: 0.4rem 0.6rem;
+  border-radius: 5px;
+  color: var(--primary);
+  font-size: 1rem;
+  font-weight: 800;
+  transition: 300ms;
+  width: fit-content;
+  cursor: pointer;
+ }
+
+ .button:hover {
+  background-color: var(--primary-light);
+}

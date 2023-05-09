@@ -1,8 +1,8 @@
 .container {
   display: grid;
+  gap: 1rem;
   font-family: Bitter;
-  margin: 0 auto;
-  max-width: 1000px;
+  margin: 0 1rem;
 }
 
 .card {
@@ -11,14 +11,12 @@
   flex-direction: column;
   border-radius: 6px;
   padding: 1rem;
-  margin: 0 0.5rem 1.5rem;
   max-width: 100%;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
   border: 3px solid var(--mid-light);
   transition: 300ms;
   cursor: pointer;
   overflow: hidden;
-  /* background: var(--light); */
 }
 
 .detailsContainer {
@@ -49,7 +47,7 @@
   height: 35px;
   margin-right: 10px;
   margin-bottom: 1rem;
-  border: 3px solid var(--mid-light);
+  border: 2px solid var(--mid-light);
   border-radius: 4px;
   transition: 300ms;
   padding: 5px;
@@ -72,7 +70,7 @@
 .sizeSelector {
   margin-right: 10px;
   margin-bottom: 1rem;
-  border: 3px solid var(--mid-light);
+  border: 2px solid var(--mid-light);
   border-radius: 4px;
   text-align: center;
   padding: 0.25rem 0.65rem;
@@ -103,7 +101,7 @@
   transform: translateY(2px)
 }
 
-.addToCartButton {
+/* .addToCartButton {
  background: unset;
  border: 3px solid var(--primary);
  padding: 0.4rem 0.6rem;
@@ -112,12 +110,11 @@
  font-size: 1rem;
  font-weight: 800;
  transition: 300ms;
-}
+} */
 
-.addToCartButton:hover {
-  /* border-color: var(--mid); */
+/* .addToCartButton:hover {
   background-color: var(--primary-light);
-}
+} */
 
 .imageContainer {
   position: relative;
@@ -137,9 +134,6 @@
 }
 
 @media (min-width: 480px) {
-  .card {
-    margin: 0 0.75rem 1.5rem;
-  }
 
   /* only want hover effect for card on desktop */
   .card:hover {
@@ -152,6 +146,16 @@
 
   .price {
     font-size: 1.6rem;
+  }
+
+  .colorSelector {
+    width: 28px;
+    height: 28px;
+  }
+
+  .sizeSelector {
+    font-size: 1rem;
+    padding: 0.1rem 0.4rem;
   }
 }
 
@@ -170,17 +174,13 @@
   .imageContainer:hover .image {
     transform: scale(1.05);
   }
-
-  .colorSelector {
-    width: 28px;
-    height: 28px;
-  }
-
-  .sizeSelector {
-    font-size: 1rem;
-    padding: 0.1rem 0.4rem;
-  }
 } 
+
+@media (min-width: 1200px) {
+  .container {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
 
 @media (prefers-color-scheme: dark) {
   .name {

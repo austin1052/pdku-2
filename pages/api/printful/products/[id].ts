@@ -48,10 +48,10 @@ async function getProductById(req: NextApiRequest, res: NextApiResponse) {
     let productImage: string | undefined = undefined
     const variantData = await Promise.all(variants.map(async (variant: any) => {
 
-      let { id: variantId, variant_id: detailsId, name: variantName, retail_price, files } = variant
+      let { id: variantId, variant_id: catalogId, name: variantName, retail_price, files } = variant
 
       // get variant details from printful
-      const variantDetails = await getVariantDetails(detailsId)
+      const variantDetails = await getVariantDetails(catalogId)
       const {size, color, color_code: colorCode} = variantDetails.result.variant
 
       let images: string[] = []
@@ -73,7 +73,7 @@ async function getProductById(req: NextApiRequest, res: NextApiResponse) {
       // stripe needs id as a string
       variantId = variantId.toString()
 
-      const formattedProduct = {variantId, variantName, price: retail_price, size, color, colorCode, images}
+      const formattedProduct = {variantId, variantName, price: retail_price, size, color, colorCode, images, catalogId}
       return formattedProduct
     }))
     const productData = {id, name: productName, image: productImage, price: variantData[0].price}

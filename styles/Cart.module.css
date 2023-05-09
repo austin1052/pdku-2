@@ -1,0 +1,213 @@
+.cartContainer {
+  margin: 0 1rem;
+  display: grid;
+}
+
+.cartHeader {
+  color: var(--primary);
+  padding-bottom: 1rem;
+}
+
+.detailsContainer {
+  display: grid; 
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.lineItemContainer {
+  grid-column: span 5;
+  margin-bottom: 3rem;
+}
+
+.loaderContainer {
+    padding: 2rem;
+}
+
+.lineItemHeaders {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--mid);
+}
+
+.checkoutButtonContainer {
+  align-self: flex-end;
+}
+
+@media (min-width: 768px) {
+  .cartContainer {
+    margin: 0 1rem;
+  }
+
+  .lineItemHeaders {
+    padding: 0 1rem 0.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .lineItemContainer {
+    grid-column: span 3;
+    margin-right: 3rem;
+  }
+}
+
+/* ********************************** */
+
+.shippingFormContainer {
+  position: relative;
+  grid-column: span 5;
+  margin-bottom: 2rem;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+}
+
+.shippingFormContainer > h2 {
+  text-align: right;
+  padding-bottom: 1rem;
+  /* transform: translateY(-5.75px); */
+}
+
+.orderSummary {
+  margin-bottom: 1rem;
+}
+
+.orderSummary > div {
+  padding: .75rem 0rem;
+  border-bottom: 1px solid var(--mid);
+  display: flex;
+  justify-content: space-between;
+}
+
+.shippingTitle {
+  margin-bottom: .75rem;
+}
+
+.orderSummary .dropdown {
+  margin-bottom: .4rem;
+}
+
+.calculateShippingButton {
+  margin-bottom: 1.5rem;
+  background: none;
+  border: none;
+  font-weight: 600;
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.enterShipping {
+  margin-bottom: 1rem;
+}
+
+.cartCost {
+  font-weight: 800;
+}
+
+.totalCost {
+  color: var(--primary);
+  font-size: 1.4rem;
+}
+
+.shippingForm {
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdownContainer label, .shippingForm label {
+  margin-bottom: 0.2rem;
+  font-size: 0.9rem;
+  color: var(--mid);
+}
+
+.shippingForm input, .dropdown {
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: unset;
+  background-color: var(--primary-light);
+  box-shadow: rgba(0, 0, 0, 0.04) 0px 3px 5px;
+  font-family: Bitter;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.dropdown {
+  appearance: none;
+  background-color: var(--primary-light);
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: unset;
+  background-color: var(--primary-light);
+  box-shadow: rgba(0, 0, 0, 0.04) 0px 3px 5px;
+  font-family: Bitter;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.shippingForm .grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  width: 100%;
+}
+
+.dropdownContainer, .dropdownContainer > form {
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.dropdownContainer:has(.dropdown[required]):after  {
+  content: "";
+  position: absolute;
+  top: 28px;
+  right: 12px;
+  height: 12px;
+  width: 12px;
+  border-bottom: 3px solid var(--primary);
+  border-right: 3px solid var(--primary);
+  transform: rotate(45deg);
+}
+
+
+/* postal code input */
+.shippingForm > div > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-grow: 1;
+  min-width: 0;
+}
+
+@media (min-width: 768px) {
+  .shippingFormContainer {
+    grid-column: span 2;
+  }
+
+  .shippingFormContainer > h2 {
+    padding: 0 1rem 1rem;
+    transform: translateY(-5.75px);
+  }
+
+  .orderSummary > div {
+    padding: .75rem 1rem;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .shippingForm input {
+    background-color: var(--mid);
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 3px 5px;
+  }
+
+  .dropdown {
+    background-color: var(--mid-light);
+  }
+
+  .dropdown:required {
+    background-color: var(--mid);
+  }
+  
+}

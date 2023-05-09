@@ -1,7 +1,8 @@
 import Image from "next/image";
+import Link from "next/link";
 import { AiFillCloseCircle as CloseIcon } from "react-icons/ai";
 import { IconContext } from "react-icons";
-import styles from "../styles/CartBanner.module.css";
+import styles from "../styles/cart/CartBanner.module.css";
 import { SetStateAction } from "react";
 
 interface CartBannerProps {
@@ -40,9 +41,11 @@ export default function CartBanner({
           <div className={styles.alert}>Item added to cart</div>
           <div className={styles.productName}>{product?.variantName}</div>
         </div>
-        <div className={styles.checkoutButton} onClick={handleCheckout}>
-          checkout
-        </div>
+        <Link href="/merch/cart">
+          <div className={styles.checkoutButton} onClick={handleCheckout}>
+            checkout
+          </div>
+        </Link>
       </div>
     </div>
   );

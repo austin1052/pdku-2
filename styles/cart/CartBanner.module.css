@@ -16,7 +16,7 @@
 .image {
   position: relative !important;
   object-fit: contain !important;
-  height: unset !important;
+  /* height: unset !important; */
   margin: 0 auto;
 }
 

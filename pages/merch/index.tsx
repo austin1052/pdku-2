@@ -15,9 +15,12 @@ export default function MerchPage({ allProducts }: any) {
     ProductVariant | undefined
   >();
 
+  console.log("render");
+
   async function addItemToCart(variant: ProductVariant) {
     const {
       stripePriceId,
+      catalogId,
       variantId,
       variantName: name,
       price,
@@ -25,6 +28,7 @@ export default function MerchPage({ allProducts }: any) {
     } = variant;
 
     const addedProduct: CartItem = {
+      catalogId,
       variantId,
       name,
       price,
@@ -34,6 +38,7 @@ export default function MerchPage({ allProducts }: any) {
     };
 
     setAddedProduct(variant);
+    setShowCartBanner(true);
 
     const localToken = localStorage.getItem("token");
     if (localToken === null) {
@@ -47,7 +52,6 @@ export default function MerchPage({ allProducts }: any) {
     // this event is needed to update the quantity in the cart icon
     window.dispatchEvent(new Event("addCartItem"));
 
-    setShowCartBanner(true);
     setTimeout(() => {
       setShowCartBanner(false);
     }, 7000);

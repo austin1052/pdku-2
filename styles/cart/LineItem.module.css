@@ -1,0 +1,125 @@
+.loaderContainer {
+    padding: 2rem;
+}
+
+.lineItem {
+  display: flex;
+  padding: 1rem 0rem;
+  border-bottom: 1px solid var(--mid);
+  animation: slide-up 1s;
+}
+
+.removeItemButton {
+  margin-right: 0.5rem;
+  font-size: 1.3rem;
+  color: var(--primary-light);
+}
+
+.removeItemButton:hover {
+  color: red;
+}
+
+.imageContainer {
+  width: max(10%, 20%);
+  margin-right: 1rem;
+  position: relative;
+  background-color: var(--mid-light);
+  border-radius: 5px;
+  height: fit-content;
+}
+
+.image {
+  border-radius: 6px;
+  position: relative !important;
+  object-fit: contain !important;
+  height: unset !important;
+}
+
+.itemDetails {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.itemDetails > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* one detail */
+.itemDetails > div > div {
+  margin-bottom: 0.5rem;
+}
+
+.itemPrice {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.itemDetails .quantityContainer {
+  display: flex;
+  margin-bottom: 0;
+}
+
+.quantityContainer > div {
+  height: 30px;
+  width: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.2rem 0.5rem;
+  font-weight: 800;
+}
+
+.quantity {
+  border-top: 2px solid var(--primary-light);
+  border-bottom: 2px solid var(--primary-light);
+}
+
+.quantityContainer .quantityDecrease, .quantityContainer .quantityIncrease {
+  /* width: 40px; */
+  font-size: 1.4rem;
+  border: 2px solid var(--primary-light);
+  transition: 300ms;
+  cursor: pointer;
+}
+
+.quantityIncrease {
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 4px;
+}
+
+.quantityIncrease:hover {
+  background-color: var(--primary-light);
+}
+
+.quantityDecrease {
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 4px;
+}
+
+.quantityDecrease:hover {
+  background-color: var(--primary-light);
+}
+
+@media (min-width: 768px) {
+  .removeItemButton {
+    margin-right: 1rem;
+  }
+
+  .lineItem {
+    padding: 1rem;
+  }
+}
+
+@keyframes slide-up {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
