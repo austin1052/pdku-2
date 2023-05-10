@@ -3,11 +3,14 @@ import { v4 as uuid } from "uuid";
 import ProductCard from "../../components/products/ProductCard";
 import CartBanner from "../../components/CartBanner";
 import styles from "../../styles/ProductCard.module.css";
-import { getAllProductsFromFirebase } from "../../utils/firebase/cart";
+import {
+  getAllProductsFromFirebase,
+  addToCart,
+} from "../../utils/firebase/cart";
 import { getFunctions, httpsCallable } from "firebase/functions";
 
 const functions = getFunctions();
-const addToCart = httpsCallable(functions, "addToCart");
+// const addToCart = httpsCallable(functions, "addToCart");
 // const removeFromCart = httpsCallable(functions, "removeFromCart");
 
 export default function MerchPage({ allProducts }: any) {
@@ -43,9 +46,9 @@ export default function MerchPage({ allProducts }: any) {
     if (localToken === null) {
       const token = uuid();
       localStorage.setItem("token", token);
-      await addToCart({ token, addedProduct });
+      await addToCart(token, addedProduct);
     } else {
-      await addToCart({ token: localToken, addedProduct });
+      await addToCart(localToken, addedProduct);
     }
 
     setAddedProduct(variant);

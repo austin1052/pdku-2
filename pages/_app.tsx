@@ -1,16 +1,16 @@
 import type { AppProps } from "next/app";
 // import Layout from "../components/Layout";
-import Layout2 from "../components/Layout2";
+import Layout from "../components/Layout";
 import { CartContextProvider } from "../context/CartContext";
 import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <Layout2>
+    <Layout>
       <CartContextProvider>
         <Component {...pageProps} />
       </CartContextProvider>
-    </Layout2>
+    </Layout>
   );
 }
 

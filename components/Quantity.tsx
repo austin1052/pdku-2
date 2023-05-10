@@ -1,10 +1,7 @@
 import { CartContext } from "../context/CartContext";
 import { SetStateAction, useState, useContext } from "react";
-import { getFunctions, httpsCallable } from "firebase/functions";
+import { updateItemQuantity } from "../utils/firebase/cart";
 import styles from "../styles/cart/LineItem.module.css";
-
-const functions = getFunctions();
-const updateItemQuantity = httpsCallable(functions, "updateItemQuantity");
 
 interface Props {
   quantity: number;
@@ -34,15 +31,16 @@ export default function Quantity({ quantity, setItemQuantity, id }: Props) {
   };
 
   async function updateQuantity(newQuantity: number) {
-    const updatedQuantity = quantity + newQuantity;
-    const currentItem = lineItems?.find((item) => item.variantId === id);
-    const updatedItem = { ...currentItem, quantity: updatedQuantity };
     const localToken = localStorage.getItem("token");
-    await updateItemQuantity({
-      token: localToken,
-      updatedItem,
-    });
-    setIsLoading(false);
+    if (localToken) {
+      const updatedQuantity = quantity + newQuantity;
+      const currentItem = lineItems?.find((item) => item.variantId === id);
+      if (currentItem) {
+        const updatedItem = { ...currentItem, quantity: updatedQuantity };
+        await updateItemQuantity(localToken, updatedItem);
+        setIsLoading(false);
+      }
+    }
   }
 
   return (

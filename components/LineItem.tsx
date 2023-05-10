@@ -5,10 +5,7 @@ import { AiFillCloseCircle as CloseIcon } from "react-icons/ai";
 import { IconContext } from "react-icons";
 import Quantity from "../components/Quantity";
 import styles from "../styles/cart/LineItem.module.css";
-import { getFunctions, httpsCallable } from "firebase/functions";
-
-const functions = getFunctions();
-const removeFromCart = httpsCallable(functions, "removeFromCart");
+import { removeFromCart } from "../utils/firebase/cart";
 
 interface LineItemProps {
   item: CartItem;
@@ -22,19 +19,19 @@ export default function LineItem({ item }: LineItemProps) {
 
   const totalItemCost = (item.quantity * Number(item.price)).toFixed(2);
 
+  // ****************** //
+
   async function handleRemove(event: any) {
     const localToken = localStorage.getItem("token");
-    setIsLoading(true);
-    setLineItemStyle(`${styles.lineItem} ${styles.removed}`);
-    const res = await removeFromCart({
-      token: localToken,
-      removedProduct: item,
-    });
-    const data = res.data as RemoveFromCartResponse;
-    // wait for trainsition delay on lineItem to finish before setting new items
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    setIsLoading(false);
-    setLineItems(data.lineItems);
+    if (localToken !== null) {
+      setIsLoading(true);
+      setLineItemStyle(`${styles.lineItem} ${styles.removed}`);
+      const res = await removeFromCart(localToken, item);
+      // wait for trainsition delay on lineItem to finish before setting new items
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      setIsLoading(false);
+      setLineItems(res?.lineItems);
+    }
   }
 
   useEffect(() => {
