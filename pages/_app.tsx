@@ -5,11 +5,11 @@ import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <CartContextProvider>
-      <Layout>
+    <Layout>
+      <CartContextProvider>
         <Component {...pageProps} />
-      </Layout>
-    </CartContextProvider>
+      </CartContextProvider>
+    </Layout>
   );
 }
 
