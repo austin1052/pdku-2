@@ -4,40 +4,30 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 
-  const {regionValue} = req.body
-  const shippingRegions = getShippingRegionsFromFirebase();
+  const {country, region, stripeLineItems} = JSON.parse(req.body)
+  const shippingRegions = await getShippingRegionsFromFirebase();
+  const shippingCost: number = shippingRegions && shippingRegions[region as keyof ShippingRegions];
 
   if (req.method === 'POST') {
     try {
-      // Create Checkout Sessions from body params.
       const session = await stripe.checkout.sessions.create({
-        line_items: [
-          {
-            // need to get price id from stripe
-            price: "price_1N36bBLpLN5jLLuRcFPfla7D",
-            quantity: 1,
-          },
-        ],
+        line_items: stripeLineItems,
         mode: 'payment',
-        shipping_address_collection: {allowed_countries: ['US', 'CA']},
+        shipping_address_collection: {allowed_countries: [country]},
         shipping_options: [
           {
             shipping_rate_data: {
               type: 'fixed_amount',
-              fixed_amount: {amount: 399, currency: 'usd'},
-              display_name: 'Free shipping',
-              delivery_estimate: {
-                minimum: {unit: 'business_day', value: 5},
-                maximum: {unit: 'business_day', value: 7},
-              }
+              fixed_amount: {amount: (shippingCost*100), currency: 'usd'},
+              display_name: 'Flat rate shipping',
             }
           }
         ],          
         success_url: `${req.headers.origin}/?success=true`,
         cancel_url: `${req.headers.origin}/?canceled=true`,
       });
-      // res.redirect(303, session.url);
-      res.send({message: "Success", url: session.url});
+
+      res.status(200).send({message: "Success", url: session.url});
 
     } catch (error: any) {
       res.status(error.statusCode || 500).json(error.message);

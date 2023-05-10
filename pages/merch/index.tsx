@@ -39,9 +39,6 @@ export default function MerchPage({ allProducts }: any) {
       quantity: 1,
     };
 
-    // setAddedProduct(variant);
-    // setShowCartBanner(true);
-
     const localToken = localStorage.getItem("token");
     if (localToken === null) {
       const token = uuid();
@@ -55,11 +52,11 @@ export default function MerchPage({ allProducts }: any) {
     setShowCartBanner(true);
 
     // this event is needed to update the quantity in the cart icon
-    window.dispatchEvent(new Event("addCartItem"));
+    window.dispatchEvent(new Event("updateCart"));
 
     setTimeout(() => {
       setShowCartBanner(false);
-    }, 7000);
+    }, 4000);
   }
 
   return (
@@ -70,20 +67,6 @@ export default function MerchPage({ allProducts }: any) {
           setShowCartBanner={setShowCartBanner}
         />
       )}
-      {/* {isLoading ? (
-        <div>Loading...</div>
-      ) : (
-        allProducts.map((product: Product, index: number) => {
-          return (
-            <ProductCard
-              product={product}
-              index={index}
-              addItemToCart={addItemToCart}
-              key={product.id}
-            />
-          );
-        })
-      )} */}
       {allProducts.map((product: Product, index: number) => {
         return (
           <ProductCard

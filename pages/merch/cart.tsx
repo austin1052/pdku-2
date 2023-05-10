@@ -1,6 +1,7 @@
 import { useState, useContext, useEffect } from "react";
 import { CartContext } from "../../context/CartContext";
 import LineItem from "../../components/LineItem";
+import ShippingElement from "../../components/shippingForm";
 import CountryDropdown from "../../components/shippingForm/CountryDropdown";
 import Loader from "../../components/Loader";
 import Button from "../../components/Button";
@@ -16,8 +17,10 @@ interface CartProps {
 export default function Cart({ countryList, shippingRegions }: CartProps) {
   const [countryValue, setCountryValue] = useState("US-americas");
   const [regionValue, setRegionValue] = useState<string>("americas");
+
   const shippingCost: number =
     shippingRegions[regionValue as keyof ShippingRegions];
+
   const { lineItems, setLineItems, isLoading, setIsLoading } =
     useContext(CartContext);
 
@@ -57,17 +60,20 @@ export default function Cart({ countryList, shippingRegions }: CartProps) {
     setRegionValue(region);
   }, [countryValue]);
 
-  async function createCheckoutSession() {
-    const sessions = await fetch("/api/create-checkout-session", {
-      method: "POST",
-      body: JSON.stringify(regionValue),
+  async function createCheckoutSession(event: any) {
+    event.preventDefault();
+    const country = countryValue.split("-")[0];
+    const region = countryValue.split("-")[1];
+    const stripeLineItems = lineItems?.map((item) => {
+      return { price: item.stripePriceId, quantity: item.quantity };
     });
+    const res = await fetch("/api/create-checkout-session", {
+      method: "POST",
+      body: JSON.stringify({ country, region, stripeLineItems }),
+    });
+    const sessionData = await res.json();
+    window.location.href = sessionData.url;
   }
-
-  console.log(lineItems);
-
-  const country = countryValue.split("-")[0];
-  const region = countryValue.split("-")[1];
 
   return (
     <>
@@ -122,12 +128,6 @@ export default function Cart({ countryList, shippingRegions }: CartProps) {
                         setCountryValue={setCountryValue}
                         countryList={countryList}
                       />
-                      {/* <button
-                        type="submit"
-                        className={styles.calculateShippingButton}
-                      >
-                        calculate shipping
-                      </button> */}
                     </form>
                   </div>
                 </div>
@@ -152,7 +152,7 @@ export default function Cart({ countryList, shippingRegions }: CartProps) {
               )}
               {/* <Button text="checkout" onClick={createCheckoutSession} /> */}
             </div>
-            {/* <ShippingForm countryList={countryList} /> */}
+            {/* <ShippingElement countryList={countryList} /> */}
           </div>
         </div>
       </div>

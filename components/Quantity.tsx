@@ -39,6 +39,7 @@ export default function Quantity({ quantity, setItemQuantity, id }: Props) {
         const updatedItem = { ...currentItem, quantity: updatedQuantity };
         await updateItemQuantity(localToken, updatedItem);
         setIsLoading(false);
+        window.dispatchEvent(new Event("updateCart"));
       }
     }
   }

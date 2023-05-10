@@ -31,6 +31,7 @@ export default function LineItem({ item }: LineItemProps) {
       await new Promise((resolve) => setTimeout(resolve, 100));
       setIsLoading(false);
       setLineItems(res?.lineItems);
+      window.dispatchEvent(new Event("updateCart"));
     }
   }
 

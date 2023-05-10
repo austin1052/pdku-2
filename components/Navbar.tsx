@@ -19,7 +19,7 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    window.addEventListener("addCartItem", () => {
+    window.addEventListener("updateCart", () => {
       const token = localStorage.getItem("token");
       if (token !== null) {
         getCartQuantityFromFirebase(token);

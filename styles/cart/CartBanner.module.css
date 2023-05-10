@@ -10,7 +10,7 @@
   border: 3px solid var(--dark);
   border-radius: 6px;
   padding: 0.5rem;
-  animation: slide-in 7s;
+  animation: slide-in 4s;
 }
 
 .image {

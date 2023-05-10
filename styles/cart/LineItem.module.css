@@ -12,7 +12,7 @@
 .removeItemButton {
   margin-right: 0.5rem;
   font-size: 1.3rem;
-  color: var(--primary-light);
+  color: var(--primary);
 }
 
 .lineItem.removed {
