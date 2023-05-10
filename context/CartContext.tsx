@@ -57,7 +57,6 @@ export function CartContextProvider({
       body: JSON.stringify(shippingData),
     });
     const shippingCost = await response.json();
-    console.log({ shippingCost });
   }
 
   return (
@@ -76,69 +75,3 @@ export function CartContextProvider({
     </CartContext.Provider>
   );
 }
-
-// import { useState, useEffect, createContext, SetStateAction } from "react";
-// import { getCartFromFirebase } from "../utils/firebase/cart";
-
-// export const CartContext = createContext<CartContextValue>({});
-
-// interface CartContextValue {
-//   lineItems?: CartItem[];
-//   setLineItems?: React.Dispatch<SetStateAction<CartItem[]>>;
-//   shippingAddress?: ShippingAddress;
-//   setShippingAddress?: React.Dispatch<SetStateAction<ShippingAddress>>;
-// }
-
-// export function CartContextProvider({
-//   children,
-// }: {
-//   children: React.ReactNode;
-// }) {
-//   const [lineItems, setLineItems] = useState<CartItem[]>();
-//   const [shippingAddress, setShippingAddress] = useState<
-//     ShippingAddress
-//   >();
-
-//   // const [loading, setLoading] = useState(true);
-
-//   console.log(shippingAddress);
-
-//   useEffect(() => {
-//     // get cart from firebase
-//     async function getCart() {
-//       const token = localStorage.getItem("token");
-//       if (token !== null) {
-//         const cart = await getCartFromFirebase(token);
-//         setLineItems(cart);
-//         // setLoading(false);
-//       }
-//     }
-//     getCart();
-//   }, []);
-
-//   console.log({ lineItems });
-
-//   async function getShippingCost(recipient: ShippingAddress) {
-//     const items = lineItems?.map((item) => {
-//       return {
-//         quantity: item.quantity,
-//         variant_id: item.catalogId,
-//       };
-//     });
-
-//     const shippingData = { recipient, items };
-
-//     const response = await fetch("/api/printful/shipping", {
-//       method: "POST",
-//       body: JSON.stringify(shippingData),
-//     });
-//     const shippingCost = await response.json();
-//     console.log({ shippingCost });
-//   }
-
-//   return (
-//     <CartContext.Provider value={{ shippingAddress, setShippingAddress lineItems, setLineItems }}>
-//       {children}
-//     </CartContext.Provider>
-//   );
-// }

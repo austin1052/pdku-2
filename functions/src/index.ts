@@ -85,6 +85,7 @@ export const addToCart = functions.https.onCall(async (data, context) => {
       lineItems.push(addedProduct);
     }
     await cartRef.update({lineItems});
+    return {success: true, message: "item added to cart", lineItems }
   } else {
     const cartData = {
       email: null,
@@ -92,6 +93,42 @@ export const addToCart = functions.https.onCall(async (data, context) => {
       lineItems: [addedProduct]
     };
     await cartRef.set(cartData);
+    return {success: true, message: "item added to cart", lineItems: [addedProduct]}
   }
-  return {success: true, message: "item added to cart" }
+});
+
+export const removeFromCart = functions.https.onCall(async (data, context) => {
+  const { token, removedProduct } = data;
+  const cartRef = db.collection('carts').doc(token);
+  const cartDoc = await cartRef.get();
+  if (cartDoc.exists) {
+    const lineItems = cartDoc.data()?.lineItems;
+    const updatedLineItems = lineItems.filter((item: CartItem) => item.variantId !== removedProduct.variantId);
+    await cartRef.set({lineItems: updatedLineItems});
+    return {success: true, message: "item removed from cart", lineItems: updatedLineItems}
+  } else {
+    return {success: false, message: "item not found" }
+  }
+});
+
+export const updateItemQuantity = functions.https.onCall(async (data, context) => {
+  const { token, updatedItem } = data;
+  const cartRef = db.collection('carts').doc(token);
+  const cartDoc = await cartRef.get();
+  const lineItems = cartDoc.data()?.lineItems
+  // if updated id === current id, update that item in list with new quantity
+
+  const updatedLineItems = lineItems.map((item: CartItem) => {
+    if (item.variantId === updatedItem.variantId) {
+      return {...item, quantity: updatedItem.quantity};
+    }
+    return item;
+  });
+
+  try {
+    await cartRef.update({lineItems: updatedLineItems});
+    return {success: true, message: "item quantity updated", lineItems: updatedLineItems};
+  } catch (error) {
+    return {success: false, message: "cart not found" };
+  }
 });

@@ -37,7 +37,7 @@ export default function Cart({ countryList, shippingRegions }: CartProps) {
     // get cart from firebase
     async function getCart() {
       setIsLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 1500));
       const token = localStorage.getItem("token");
       if (token !== null) {
         const cart = await getCartFromFirebase(token);
@@ -51,8 +51,6 @@ export default function Cart({ countryList, shippingRegions }: CartProps) {
   const total = (subtotal || 0) + shippingCost;
   const formattedSubtotal = subtotal?.toFixed(2);
   const formattedTotal = total.toFixed(2);
-
-  console.log(formattedSubtotal);
 
   useEffect(() => {
     const region = countryValue.split("-")[1];
@@ -81,16 +79,19 @@ export default function Cart({ countryList, shippingRegions }: CartProps) {
               <h3>Product</h3>
               <h3>Total</h3>
             </div>
-            {isLoading ? (
+
+            {isLoading && !lineItems ? (
               <div className={styles.loaderContainer}>
                 <Loader />
               </div>
-            ) : lineItems ? (
+            ) : lineItems && lineItems.length > 0 ? (
               lineItems.map((item) => {
                 return <LineItem key={item.variantId} item={item} />;
               })
             ) : (
-              <div>nothing in cart</div>
+              <div className={styles.loaderContainer}>
+                <div style={{ textAlign: "center" }}>Cart is empty</div>
+              </div>
             )}
           </div>
 
@@ -142,7 +143,12 @@ export default function Cart({ countryList, shippingRegions }: CartProps) {
               </div>
             </div>
             <div className={styles.checkoutButtonContainer}>
-              <Button text="checkout" onClick={createCheckoutSession} />
+              {isLoading ? (
+                <div></div>
+              ) : (
+                <Button text="checkout" onClick={createCheckoutSession} />
+              )}
+              {/* <Button text="checkout" onClick={createCheckoutSession} /> */}
             </div>
             {/* <ShippingForm countryList={countryList} /> */}
           </div>

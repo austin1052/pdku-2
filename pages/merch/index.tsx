@@ -8,6 +8,7 @@ import { getFunctions, httpsCallable } from "firebase/functions";
 
 const functions = getFunctions();
 const addToCart = httpsCallable(functions, "addToCart");
+// const removeFromCart = httpsCallable(functions, "removeFromCart");
 
 export default function MerchPage({ allProducts }: any) {
   const [showCartBanner, setShowCartBanner] = useState(false);

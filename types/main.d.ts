@@ -67,3 +67,9 @@ interface ShippingRegions {
   europe: number,
   oceania: number
 }
+
+interface RemoveFromCartResponse {
+  success: boolean,
+  lineItems: CartItem[];
+  message: string;
+}
