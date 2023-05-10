@@ -18,20 +18,22 @@ export default function LineItem({ item }: LineItemProps) {
   const { name, price, stripePriceId, quantity, image, variantId } = item;
   const [lineItemStyle, setLineItemStyle] = useState(`${styles.lineItem}`);
   const [itemQuantity, setItemQuantity] = useState(quantity);
-  const { setLineItems } = useContext(CartContext);
+  const { setLineItems, setIsLoading } = useContext(CartContext);
 
   const totalItemCost = (item.quantity * Number(item.price)).toFixed(2);
 
   async function handleRemove(event: any) {
     const localToken = localStorage.getItem("token");
+    setIsLoading(true);
+    setLineItemStyle(`${styles.lineItem} ${styles.removed}`);
     const res = await removeFromCart({
       token: localToken,
       removedProduct: item,
     });
     const data = res.data as RemoveFromCartResponse;
-    setLineItemStyle(`${styles.lineItem} ${styles.removed}`);
     // wait for trainsition delay on lineItem to finish before setting new items
     await new Promise((resolve) => setTimeout(resolve, 500));
+    setIsLoading(false);
     setLineItems(data.lineItems);
   }
 

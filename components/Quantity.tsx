@@ -13,7 +13,6 @@ interface Props {
 }
 
 export default function Quantity({ quantity, setItemQuantity, id }: Props) {
-  // let timeoutId: any = null;
   const { lineItems, setIsLoading } = useContext(CartContext);
 
   const [timeoutId, setTimeoutId] = useState<ReturnType<
@@ -36,7 +35,6 @@ export default function Quantity({ quantity, setItemQuantity, id }: Props) {
 
   async function updateQuantity(newQuantity: number) {
     const updatedQuantity = quantity + newQuantity;
-
     const currentItem = lineItems?.find((item) => item.variantId === id);
     const updatedItem = { ...currentItem, quantity: updatedQuantity };
     const localToken = localStorage.getItem("token");

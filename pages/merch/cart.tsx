@@ -37,7 +37,7 @@ export default function Cart({ countryList, shippingRegions }: CartProps) {
     // get cart from firebase
     async function getCart() {
       setIsLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // await new Promise((resolve) => setTimeout(resolve, 500));
       const token = localStorage.getItem("token");
       if (token !== null) {
         const cart = await getCartFromFirebase(token);
@@ -63,6 +63,8 @@ export default function Cart({ countryList, shippingRegions }: CartProps) {
       body: JSON.stringify(regionValue),
     });
   }
+
+  console.log(lineItems);
 
   const country = countryValue.split("-")[0];
   const region = countryValue.split("-")[1];
