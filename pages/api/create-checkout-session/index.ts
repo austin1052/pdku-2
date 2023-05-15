@@ -4,7 +4,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 
-  const {country, region, stripeLineItems} = JSON.parse(req.body)
+  const {country, region, stripeLineItems, cartId} = JSON.parse(req.body)
   const shippingRegions = await getShippingRegionsFromFirebase();
   const shippingCost: number = shippingRegions && shippingRegions[region as keyof ShippingRegions];
 
@@ -25,8 +25,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         ],          
         success_url: `${req.headers.origin}/?success=true`,
         cancel_url: `${req.headers.origin}/?canceled=true`,
+        metadata: {
+          
+        }
       });
-
+      
       res.status(200).send({message: "Success", url: session.url});
 
     } catch (error: any) {

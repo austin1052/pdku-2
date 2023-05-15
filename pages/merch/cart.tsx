@@ -62,6 +62,7 @@ export default function Cart({ countryList, shippingRegions }: CartProps) {
 
   async function createCheckoutSession(event: any) {
     event.preventDefault();
+    const token = localStorage.getItem("token");
     const country = countryValue.split("-")[0];
     const region = countryValue.split("-")[1];
     const stripeLineItems = lineItems?.map((item) => {
@@ -69,7 +70,7 @@ export default function Cart({ countryList, shippingRegions }: CartProps) {
     });
     const res = await fetch("/api/create-checkout-session", {
       method: "POST",
-      body: JSON.stringify({ country, region, stripeLineItems }),
+      body: JSON.stringify({ country, region, stripeLineItems, cartId: token }),
     });
     const sessionData = await res.json();
     window.location.href = sessionData.url;
