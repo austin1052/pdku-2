@@ -10,8 +10,9 @@ export const config = {
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 
-  const endpointSecret = "whsec_5715a48f8243c77def47dce1463d7776a071dce14970d8f702c3c0bc75b525ad";
-  // const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  // test secret
+  // const endpointSecret = "whsec_5715a48f8243c77def47dce1463d7776a071dce14970d8f702c3c0bc75b525ad";
+  const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
   
   let event;
   const buf = await buffer(req);
