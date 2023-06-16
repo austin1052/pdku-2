@@ -14,9 +14,13 @@ const splineDesktop =
   "https://prod.spline.design/6WK1Tz8owGTkSgdj/scene.splinecode";
 
 export default function App() {
+  function handleScroll(event: any) {
+    console.log(event.currentTarget);
+  }
+
   const isMobile = useContext(MobileContext);
   return (
-    <div className={styles.page}>
+    <div className={styles.page} onScroll={handleScroll}>
       <Spline
         className={styles.spline2}
         scene={isMobile ? splineMobile : splineDesktop}
