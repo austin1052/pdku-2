@@ -5,9 +5,12 @@ import ShippingElement from "../../components/shippingForm";
 import CountryDropdown from "../../components/shippingForm/CountryDropdown";
 import Loader from "../../components/Loader";
 import Button from "../../components/Button";
-import { getShippingRegionsFromFirebase } from "../../utils/firebase/cart";
+// import { getShippingRegionsFromFirebase } from "../../utils/firebase/cart";
 import styles from "../../styles/Cart.module.css";
-import { getCartFromFirebase } from "../../utils/firebase/cart";
+import {
+  getCartFromFirebase,
+  getShippingRegionsFromFirebase,
+} from "../../utils/firebase/cart";
 
 interface CartProps {
   countryList: CountryList;
@@ -178,7 +181,7 @@ export async function getStaticProps() {
   const after = countries.splice(USIndex + 1);
   const USFirstList = [US, ...before, ...after];
 
-  const shippingRegions = await getShippingRegionsFromFirebase();
+  const shippingRegions = (await getShippingRegionsFromFirebase()) || null;
 
   return {
     props: { countryList: USFirstList, shippingRegions },
