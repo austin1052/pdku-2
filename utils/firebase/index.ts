@@ -1,4 +1,79 @@
 const cloudURL = "https://us-central1-pdku-e1ef3.cloudfunctions.net"
+import { getDoc, setDoc, doc } from "firebase/firestore";
+import { db } from "./firebaseConfig";
+
+// ******
+
+export async function getProduct(productId: string) {
+  try {
+    const productRef = doc(db, "products", productId);
+    const res = await getDoc(productRef)
+    const product = res.data()
+    return product
+  } catch(error: any) {
+     console.log(error);
+    }
+}
+
+export async function getProductVariant(productId: string, variantId: string) {
+  try {
+    const product = await getProduct(productId);
+    const variant = product?.variants.filter((item: ProductVariant) => item.variantId === variantId )
+    return variant
+  } catch(error: any) {
+     console.log(error);
+    }
+}
+
+export async function getAllVariantIds(product: Product) {
+  const variants = product.variants;
+  const variantIds = variants.map((variant: ProductVariant) => {
+    if (!variant) return
+    return variant.variantId
+  })
+  return variantIds
+}
+
+export async function getVariantPriceIds(product: Product) {
+  const variants = product.variants;
+  const priceData = variants.map((variant: ProductVariant) => {
+    const id = variant.variantId;
+    const priceIds = variant.priceIds;
+    return {[id]: priceIds}
+  })
+  console.log("PRICE DATA", priceData);
+  return priceData
+}
+
+export async function sendOrderConfirmationEmail(token: string, email: string, orderId: string, products: EmailItem[]) {
+  try {
+    await fetch(`${cloudURL}/sendOrderConfirmationEmail`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": token
+      },
+      body: JSON.stringify({email, orderId, products})
+    })
+  } catch(error: any) {
+      console.log(error);
+    }
+}
+
+export async function sendOrderAlertEmail(token: string, email: string, orderId: string, products: EmailItem[]) {
+  try {
+    await fetch(`${cloudURL}/sendOrderAlertEmail`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": token
+      },
+      body: JSON.stringify({email, orderId, products})
+    })
+  } catch(error: any) {
+      console.log(error);
+    }
+}
 
 export async function addProductToFirebase(token: string, product: Product) {
   try {
@@ -25,6 +100,7 @@ export async function deleteProductFromFirebase(token: string, productId: string
       },
       body: JSON.stringify({productId})
     })
+    console.log("DELETE FROM FIREBASE");
     const deletedProduct = await response.json() 
     return deletedProduct
   } catch(error: any) {
@@ -32,147 +108,24 @@ export async function deleteProductFromFirebase(token: string, productId: string
     }
 }
 
-export async function addVariantToFirebase(token: string, productId: string, variant: ProductVariant) {
+export async function getLocationFromFirebase(token: string) {
+  const locationRef = doc(db, "locations", token);
   try {
-    await fetch(`${cloudURL}/addVariantToFirebase`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": token
-      },
-      body: JSON.stringify({productId, variant})
-    })
-  } catch(error: any) {
-      console.log(error);
-    }
-}
-
-export async function updateVariantInFirebase(token: string, productId: string, variant: ProductVariant) {
-  try {
-    await fetch(`${cloudURL}/updateVariantInFirebase`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": token
-      },
-      body: JSON.stringify({productId, variant})
-    })
-  } catch(error: any) {
+    const res = await getDoc(locationRef);
+    const locationData = res.data();
+    return locationData;
+  } catch (error) {
+    console.log("ERROR");
     console.log(error);
   }
 }
 
-// returns array of all variants for a product
-export async function getAllVariantDataFromFirebase(productId: string) {
+export async function setLocationInFirebase(token: string, locationData: locationData) {
+  const locationRef = doc(db, "locations", token);
   try {
-    const response = await fetch(`${cloudURL}/getAllVariantDataFromFirebase`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(productId)
-    })
-    const variantData = await response.json() 
-    return variantData
-  } catch(error: any) {
-      console.log(error);
-    }
-}
-
-// returns array of variant IDs 
-export async function getAllVariantIdsFromFirebase(token: string, productId: string) {
-  try {
-    const response = await fetch(`${cloudURL}/getAllVariantIdsFromFirebase`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": token
-      },
-      body: JSON.stringify({productId})
-    })
-    const variantIds = await response.json() 
-    return variantIds
-  } catch(error: any) {
-      console.log(error);
-    }
-}
-
-export async function deleteVariantFromFirebase(token: string, productId: string, variantId: string) {
-  try {
-    const response = await fetch(`${cloudURL}/deleteVariantFromFirebase`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": token
-      },
-      body: JSON.stringify({productId, variantId})
-    })
-    const deletedVariant = await response.json() 
-    return deletedVariant
-  } catch(error: any) {
-      console.log(error);
-    }
-}
-
-
-// ******
-
-export async function addProductToFirebaseV2(token: string, product: Product) {
-  try {
-    await fetch(`${cloudURL}/addProductToFirebaseV2`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": token
-      },
-      body: JSON.stringify({product})
-    })
-  } catch(error: any) {
-      console.log(error);
-    }
-}
-
-export async function deleteProductFromFirebaseV2(token: string, productId: string) {
-  try {
-    const response = await fetch(`${cloudURL}/deleteProductFromFirebaseV2`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": token
-      },
-      body: JSON.stringify({productId})
-    })
-    const deletedProduct = await response.json() 
-    return deletedProduct
-  } catch(error: any) {
-      console.log(error);
-    }
-}
-
-export async function getAllVariantIdsFromFirebaseV2(token: string, productId: string) {
-  try {
-    const response = await fetch(`${cloudURL}/getProduct`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": token
-      },
-      body: JSON.stringify({productId})
-    })
-    const data = await response.json()
-    console.log("DATA");
-    console.log(data);
-    if (data.success) {
-      const variants = data.product.variants
-      const variantIds = variants.map((variant: ProductVariant) => {
-        if (!variant) return
-        return variant.variantId
-      })
-      return variantIds
-    }
-    return []
-  } catch(error: any) {
-      console.log(error);
-      return []
-    }
+    await setDoc(locationRef, locationData);
+  } catch (error) {
+    console.log("ERROR");
+    console.log(error);
+  }
 }

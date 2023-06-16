@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next"
+import { lookupIP } from "../../../../utils/IPRegistry";
 
 async function getAllProducts(req: NextApiRequest, res: NextApiResponse) {
   try {
@@ -14,6 +15,9 @@ async function getAllProducts(req: NextApiRequest, res: NextApiResponse) {
   } catch(error) {
     console.error(error)
   }
+
+  res.send("ERROR GETTING PRODUCTS")
+
 };
 
 export default getAllProducts;

@@ -65,9 +65,11 @@ export default function Cart({ countryList, shippingRegions }: CartProps) {
     const token = localStorage.getItem("token");
     const country = countryValue.split("-")[0];
     const region = countryValue.split("-")[1];
+
     const stripeLineItems = lineItems?.map((item) => {
       return { price: item.stripePriceId, quantity: item.quantity };
     });
+    console.log(stripeLineItems);
     const res = await fetch("/api/create-checkout-session", {
       method: "POST",
       body: JSON.stringify({ country, region, stripeLineItems, cartId: token }),

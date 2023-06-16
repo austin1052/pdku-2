@@ -2,7 +2,11 @@ import { useState, useEffect, createContext } from "react";
 
 export const MobileContext = createContext<boolean | undefined>(undefined);
 
-export function MobileContextProvider(children: React.ReactNode) {
+export function MobileContextProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [isMobile, setIsMobile] = useState(true);
   const [width, setWidth] = useState<number | undefined>(undefined);
 

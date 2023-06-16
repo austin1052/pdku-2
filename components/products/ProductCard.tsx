@@ -1,4 +1,4 @@
-import { useState, useEffect, SetStateAction } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Button from "../Button";
 import Image from "next/image";
 import styles from "../../styles/ProductCard.module.css";
@@ -16,15 +16,16 @@ export default function ProductCard({
 }: ProductCardProps) {
   const { image, name, price, variants } = product;
   const formattedPrice = Math.ceil(Number(price));
+  const [productPrice, setProductPrice] = useState<number>(formattedPrice);
+  const [selectedVariant, setSelectedVariant] = useState<
+    ProductVariant | undefined
+  >(undefined);
   const [productSizes, setProductSizes] = useState<string[]>();
   const [productColors, setProductColors] = useState<string[][]>();
   const [previewImage, setPreviewImage] = useState(image);
   const [selectedColor, setSelectedColor] = useState(product.variants[0].color);
-  const [selectedSize, setSelectedSize] = useState("");
+  const [selectedSize, setSelectedSize] = useState(product.variants[0].size);
 
-  // set colors and sizes when buy is clicked
-  // loop through variants
-  // create array of colors, array of sizes, remove duplicates
   useEffect(() => {
     const sizes: string[] = [];
     variants.forEach((variant: ProductVariant) => {
@@ -42,62 +43,41 @@ export default function ProductCard({
       }
     });
     setProductColors(colorNamesAndCodes);
-  }, [variants]);
+    const selected = variants.filter(
+      (variant) =>
+        variant.color === selectedColor && variant.size === selectedSize
+    );
+    setSelectedVariant(selected[0]);
+  }, [variants, selectedColor, selectedSize]);
 
   useEffect(() => {
     if (selectedColor !== "") {
       variants.forEach((variant) => {
         if (variant.color === selectedColor) {
           setPreviewImage(variant.images[0]);
+          return;
         }
       });
     }
   }, [selectedColor, variants]);
 
-  function handleColorSection(color: string) {
-    if (selectedColor === color) {
-      setSelectedColor("");
-    } else {
-      setSelectedColor(color);
-    }
+  function handleColorSelection(color: string) {
+    if (selectedColor !== color) setSelectedColor(color);
   }
 
-  function handleSizeSection(size: string) {
-    if (selectedSize === size) {
-      setSelectedSize("");
-    } else {
-      setSelectedSize(size);
-    }
+  function handleSizeSelection(size: string) {
+    if (selectedSize !== size) setSelectedSize(size);
   }
+
+  // need to know if product has size, color, or both
+  // when color is clicked loop through variants, if selectedColor === variant.color && selectedSize === variant.size
+  // setProductPrice exactly how you are adding to cart below
+  // maybe a setSelectedVariant? when add to cart is clicked, just call addItemToCart(selectedVariant)
 
   function handleAddToCart() {
-    variants.forEach((variant) => {
-      const { color, size } = variant;
-      //@ts-ignore
-      if (productSizes.length > 1 && productColors.length > 1) {
-        if (color === selectedColor && size === selectedSize) {
-          addItemToCart(variant);
-        }
-      }
-      //@ts-ignore
-      if (productSizes.length <= 1 && productColors.length > 1) {
-        if (color === selectedColor) {
-          addItemToCart(variant);
-        }
-      }
-      //@ts-ignore
-      if (productSizes.length > 1 && productColors.length <= 1) {
-        if (size === selectedSize) {
-          addItemToCart(variant);
-        }
-      }
-      // @ts-ignore
-      if (productSizes.length <= 1 && productColors.length <= 1) {
-        addItemToCart(variant);
-      }
-    });
+    addItemToCart(selectedVariant);
     setSelectedColor(product.variants[0].color);
-    setSelectedSize("");
+    setSelectedSize(product.variants[0].size);
   }
 
   return (
@@ -113,7 +93,7 @@ export default function ProductCard({
         />
       </div>
       <div className={styles.detailsContainer}>
-        <div className={styles.name}>{name}</div>
+        <h3 className={styles.name}>{name}</h3>
         <div className={styles.colorSelectionContainer}>
           {productColors && productColors.length > 1 ? (
             productColors.map((color, i) => {
@@ -127,7 +107,7 @@ export default function ProductCard({
                       : `${styles.colorSelector}`
                   }
                   title={color[0]}
-                  onClick={() => handleColorSection(color[0])}
+                  onClick={() => handleColorSelection(color[0])}
                 ></div>
               );
             })
@@ -147,7 +127,7 @@ export default function ProductCard({
                       ? `${styles.sizeSelector} ${styles.selected}`
                       : `${styles.sizeSelector}`
                   }
-                  onClick={() => handleSizeSection(size)}
+                  onClick={() => handleSizeSelection(size)}
                 >
                   {size}
                 </div>

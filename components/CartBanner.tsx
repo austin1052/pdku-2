@@ -3,6 +3,7 @@ import Link from "next/link";
 import { AiFillCloseCircle as CloseIcon } from "react-icons/ai";
 import { IconContext } from "react-icons";
 import styles from "../styles/cart/CartBanner.module.css";
+import navStyles from "../styles/Navbar.module.css";
 import { SetStateAction } from "react";
 
 interface CartBannerProps {

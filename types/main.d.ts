@@ -4,6 +4,7 @@ interface ProductVariant {
   colorCode: string,
   images: string[]
   price: string,
+  priceIds?: PriceId,
   size: string,
   stripePriceId: string,
   variantId: string,
@@ -11,11 +12,20 @@ interface ProductVariant {
 }
 
 interface Product {
+  currencies?: string[],
   id: string,
-  name: string,
   image: string,
+  name: string,
   price: string,
   variants: ProductVariant[]
+}
+
+interface PriceId {
+  [currencyCode: string]: string
+}
+
+interface PriceData {
+  [id: string]: PriceId | undefined
 }
 
 interface CartItem {
@@ -72,4 +82,37 @@ interface RemoveFromCartResponse {
   success: boolean,
   lineItems: CartItem[];
   message: string;
+}
+
+interface PrintfulRecipient {
+  name: string,
+  address1: string,
+  address2?: string,
+  city: string,
+  state_code: string,
+  country_code: string,
+  zip: string
+}
+
+interface PrintfulItem {
+  sync_variant_id: number,
+  quantity: number
+}
+
+interface PrintfulOrder {
+  recipient: PrintfulRecipient,
+  items: PrintfulItem[]
+}
+
+interface EmailItem {
+  variantName: string,
+  image: string,
+  price: number,
+  quantity: number
+}
+
+interface locationData {
+  countryCode: string | null,
+  countryName: string | null,
+  currencyCode: string | null,
 }

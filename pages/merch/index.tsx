@@ -7,11 +7,6 @@ import {
   getAllProductsFromFirebase,
   addToCart,
 } from "../../utils/firebase/cart";
-import { getFunctions, httpsCallable } from "firebase/functions";
-
-const functions = getFunctions();
-// const addToCart = httpsCallable(functions, "addToCart");
-// const removeFromCart = httpsCallable(functions, "removeFromCart");
 
 export default function MerchPage({ allProducts }: any) {
   const [showCartBanner, setShowCartBanner] = useState(false);
@@ -20,7 +15,12 @@ export default function MerchPage({ allProducts }: any) {
   >();
 
   async function addItemToCart(variant: ProductVariant) {
+    // check currency code
+    // sripePriceId = prices.currency_code
+    // if undefined,
+
     const {
+      // prices,
       stripePriceId,
       catalogId,
       variantId,
@@ -28,6 +28,8 @@ export default function MerchPage({ allProducts }: any) {
       price,
       images,
     } = variant;
+
+    // const stripePriceId = prices[country_code]
 
     const addedProduct: CartItem = {
       catalogId,

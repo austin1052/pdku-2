@@ -28,19 +28,23 @@ async function getVariantDetails(id: any) {
   }
 }
 
-async function getProductById(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query
   try {
 
     let product = await getProduct(id)
+    console.log("PRODUCT", product);
 
     // thumbnail_url will be null on first request
-    // request product every 3 seconds until thumbnail_url is not null
+    // request product every 5 seconds until thumbnail_url is not null
     // when thumbnail_url is not null, continue with formatting response
-    // while (product.result.sync_product.thumbnail_url === null) {
-    //   await new Promise(resolve => setTimeout(resolve, 3000));
-    //   product = await getProduct(id)
-    // }
+    while (product.result.sync_product.thumbnail_url === null) {
+      await new Promise(resolve => setTimeout(resolve, 10000));
+      console.log("GET PRODUCT");
+      product = await getProduct(id)
+    }
+
+    console.log("CONTINUE");
 
     const productName = product.result.sync_product.name
     const variants = product.result.sync_variants
@@ -82,5 +86,3 @@ async function getProductById(req: NextApiRequest, res: NextApiResponse) {
     res.send(error)
   }
 }
-
-export default getProductById;

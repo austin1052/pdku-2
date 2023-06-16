@@ -86,8 +86,6 @@ export async function updateItemQuantity(token: string, updatedItem: CartItem) {
     return {success: false, message: "cart not found" };
   }}
 
-// export async function 
-
 export async function getShippingRegionsFromFirebase() {
   const shippingRef = doc(db, "shipping", "regions");
   const res = await getDoc(shippingRef);
