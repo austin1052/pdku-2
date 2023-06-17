@@ -5,24 +5,28 @@ import ShippingElement from "../../components/shippingForm";
 import CountryDropdown from "../../components/shippingForm/CountryDropdown";
 import Loader from "../../components/Loader";
 import Button from "../../components/Button";
-// import { getShippingRegionsFromFirebase } from "../../utils/firebase/cart";
+import { getShippingRegionsFromFirebase } from "../../utils/firebase/cart";
 import styles from "../../styles/Cart.module.css";
-import {
-  getCartFromFirebase,
-  getShippingRegionsFromFirebase,
-} from "../../utils/firebase/cart";
+import { getCartFromFirebase } from "../../utils/firebase/cart";
 
 interface CartProps {
   countryList: CountryList;
-  shippingRegions: ShippingRegions;
+  shippingRegions?: ShippingRegions;
 }
 
-export default function Cart({ countryList, shippingRegions }: CartProps) {
+interface Totals {
+  shippingCost: number;
+  formattedSubtotal: string | undefined;
+  formattedTotal: string;
+}
+
+export default function Cart({ countryList }: CartProps) {
   const [countryValue, setCountryValue] = useState("US-americas");
   const [regionValue, setRegionValue] = useState<string>("americas");
+  const [totals, setTotals] = useState<Totals | undefined>(undefined);
 
-  const shippingCost: number =
-    shippingRegions[regionValue as keyof ShippingRegions];
+  // const shippingCost: number =
+  //   shippingRegions[regionValue as keyof ShippingRegions];
 
   const { lineItems, setLineItems, isLoading, setIsLoading } =
     useContext(CartContext);
@@ -42,21 +46,42 @@ export default function Cart({ countryList, shippingRegions }: CartProps) {
   useEffect(() => {
     // get cart from firebase
     async function getCart() {
-      setIsLoading(true);
-      // await new Promise((resolve) => setTimeout(resolve, 500));
       const token = localStorage.getItem("token");
       if (token !== null) {
         const cart = await getCartFromFirebase(token);
         setLineItems(cart);
       }
-      setIsLoading(false);
     }
-    getCart();
-  }, [setIsLoading, setLineItems]);
 
-  const total = (subtotal || 0) + shippingCost;
-  const formattedSubtotal = subtotal?.toFixed(2);
-  const formattedTotal = total.toFixed(2);
+    async function getTotals() {
+      const shippingRegions = await getShippingRegionsFromFirebase();
+      const shippingCost: number = shippingRegions
+        ? shippingRegions[regionValue as keyof ShippingRegions]
+        : undefined;
+
+      const subtotal: number | undefined = lineItems?.reduce(
+        (acc: number, item: CartItem) => {
+          let timesToAdd = item.quantity;
+          while (timesToAdd > 0) {
+            acc += Number(item.price);
+            timesToAdd--;
+          }
+          return acc;
+        },
+        0
+      );
+
+      const total = (subtotal || 0) + shippingCost;
+      const formattedSubtotal = subtotal?.toFixed(2);
+      const formattedTotal = total?.toFixed(2);
+
+      setTotals({ shippingCost, formattedSubtotal, formattedTotal });
+    }
+    setIsLoading(true);
+    getCart();
+    getTotals();
+    setIsLoading(false);
+  }, [setIsLoading, setLineItems, lineItems, regionValue]);
 
   useEffect(() => {
     const region = countryValue.split("-")[1];
@@ -68,7 +93,6 @@ export default function Cart({ countryList, shippingRegions }: CartProps) {
     const token = localStorage.getItem("token");
     const country = countryValue.split("-")[0];
     const region = countryValue.split("-")[1];
-
     const stripeLineItems = lineItems?.map((item) => {
       return { price: item.stripePriceId, quantity: item.quantity };
     });
@@ -117,7 +141,9 @@ export default function Cart({ countryList, shippingRegions }: CartProps) {
                 {isLoading ? (
                   <Loader size="small" />
                 ) : (
-                  <div className={styles.cartCost}>${formattedSubtotal}</div>
+                  <div className={styles.cartCost}>
+                    ${totals?.formattedSubtotal}
+                  </div>
                 )}
               </div>
               <div>
@@ -137,7 +163,7 @@ export default function Cart({ countryList, shippingRegions }: CartProps) {
                     </form>
                   </div>
                 </div>
-                <div className={styles.cartCost}>${shippingCost}</div>
+                <div className={styles.cartCost}>${totals?.shippingCost}</div>
               </div>
               <div>
                 <h3>Total</h3>
@@ -145,7 +171,7 @@ export default function Cart({ countryList, shippingRegions }: CartProps) {
                   <Loader size="small" />
                 ) : (
                   <div className={`${styles.cartCost} ${styles.totalCost}`}>
-                    ${formattedTotal}
+                    ${totals?.formattedTotal}
                   </div>
                 )}
               </div>
@@ -181,9 +207,7 @@ export async function getStaticProps() {
   const after = countries.splice(USIndex + 1);
   const USFirstList = [US, ...before, ...after];
 
-  const shippingRegions = (await getShippingRegionsFromFirebase()) || null;
-
   return {
-    props: { countryList: USFirstList, shippingRegions },
+    props: { countryList: USFirstList },
   };
 }
