@@ -1,0 +1,52 @@
+.page section {
+  /* width: max(100%, 1400px); */
+  /* margin: 0 auto; */
+}
+
+.content {
+  padding: 0 1rem; 
+  margin: 0 auto;
+  width: min(100%, 1400px);
+}
+
+.content h1 {
+  font-size: 6rem;
+}
+
+.content h2 {
+  font-size: 3rem;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.content h3 {
+  font-size: 1.8rem;
+  color: var(--dark);
+  background-color: var(--primary);
+  border-radius: 2px;
+  padding: 0.2rem 0.5rem;
+  width: fit-content;
+  margin-bottom: 2rem;
+}
+
+.content p {
+  font-size: 1.2rem;
+  letter-spacing: 0.5px;
+  line-height: 2rem;
+  margin-bottom: 1rem;
+}
+
+@media (width >= 768px) {
+  .content h2 {
+    font-size: 5rem;
+  }
+
+  .content h3 {
+    font-size: 2rem;
+  }
+
+  .content p {
+    font-size: 1.4rem;
+  }
+}

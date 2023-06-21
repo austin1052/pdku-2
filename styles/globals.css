@@ -29,60 +29,31 @@
 @font-face {
   font-family: "KCAnvaHell";
   src: url('../fonts/KCAnvaHell.otf');
+  font-weight: 600;
 }
 
 :root {
   /* --primary: rgb(77, 255, 178); */
-  --primary: rgb(61, 208, 144);
-  --primary-light: rgb(61, 208, 144, 0.3);
+  /* --primary: rgb(61, 208, 144); */
+  /* --primary-light: rgb(61, 208, 144, 0.3); */
+
+  --primary: #d0d756;
+  --primary-light: rgb(208, 215, 86, 0.3);
+  --light: rgb(253, 254, 224);
+  --white: rgb(254, 255, 246);
+
+
+
+
   --secondary: rgb(168, 88, 149);
   --dark-green: rgb(13, 22, 18);
-  /* --dark: rgb(21, 21, 21); */
-  --dark: rgb(10, 18, 15);
+  --dark: rgb(21, 21, 21);
+  /* --dark: rgb(10, 18, 15); */
 
   --mid: hsl(0, 0%, 24%);
   --mid-light: rgb(51, 51, 51, 0.2);
-  --light: rgb(223, 251, 240);
-  --white: rgb(239, 251, 247);
-}
-
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-size: 16px;
-  min-height: 100vh;
-  background-color: var(--light);
-  /* background: linear-gradient(241deg, var(--light), var(--primary)); */
-  font-family: Bitter;
-  /* font-weight: 200; */
-  /* animation: AnimationName 20s ease infinite; */
-  /* background-size: 400% 400%; */
-}
-
-body {
-  max-width: 1400px;
-  margin: 0 auto;
-  /* position: relative; */
-  /* background-image: url("../assets/images/pdku-skull.png"); */
-}
-
-h1 {
-  font-size: 2.5rem;
-}
-
-h2 {
-  font-size: 1.5rem;
-}
-
-h3 {
-  font-size: 1.2rem;
-  font-weight: 600;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
+  /* --light: rgb(223, 251, 240); */
+  /* --white: rgb(239, 251, 247); */
 }
 
 * {
@@ -91,33 +62,45 @@ a {
   margin: 0;
 }
 
-.page-container {
-  /* position: relative; */
-  /* min-height: 100vh; */
+body {
+  font-size: 16px;
+  min-height: 100vh;
+  font-family: Bitter;
+  background-image: url("../assets/images/pattern1-yellow-light.png");
+  background-position: center;
+  background-size: 2rem 2rem;
+  background-repeat: repeat;
+}
+
+/* next creates a div inside the body for all pages */
+body > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
 main {
   min-height: 100vh;
-  padding-top: 4.5rem;
+  width: 100%;
   position: relative;
   overflow: hidden;
-}
-
-.background-image {
-  position: absolute;
-  top: 10rem;
-  left: 10rem;
-  opacity: 0.02;
-  /* transform: scale(1.4); */
-  /* width: 100%; */
+  /* max-width: max(100%, 1400px); */
+  margin: 0 auto;
+  padding-top: 4.5rem;
 }
 
 @media (prefers-color-scheme: dark) {
   html, body {
     color-scheme: dark;
     color: var(--light);
-    background: var(--dark);
-    /* background: linear-gradient(241deg, var(--dark), var(--mid)); */
+  }
+  body {
+    background-image: url("../assets/images/pattern1-yellow-dark.png");
   }
 }
 

@@ -44,7 +44,6 @@ export default function Cart({ countryList }: CartProps) {
   );
 
   useEffect(() => {
-    // get cart from firebase
     async function getCart() {
       const token = localStorage.getItem("token");
       if (token !== null) {
@@ -52,36 +51,43 @@ export default function Cart({ countryList }: CartProps) {
         setLineItems(cart);
       }
     }
-
-    async function getTotals() {
-      const shippingRegions = await getShippingRegionsFromFirebase();
-      const shippingCost: number = shippingRegions
-        ? shippingRegions[regionValue as keyof ShippingRegions]
-        : undefined;
-
-      const subtotal: number | undefined = lineItems?.reduce(
-        (acc: number, item: CartItem) => {
-          let timesToAdd = item.quantity;
-          while (timesToAdd > 0) {
-            acc += Number(item.price);
-            timesToAdd--;
-          }
-          return acc;
-        },
-        0
-      );
-
-      const total = (subtotal || 0) + shippingCost;
-      const formattedSubtotal = subtotal?.toFixed(2);
-      const formattedTotal = total?.toFixed(2);
-
-      setTotals({ shippingCost, formattedSubtotal, formattedTotal });
-    }
-    setIsLoading(true);
+    // setIsLoading(true);
     getCart();
+    setIsLoading(false);
+  }, [setLineItems, setIsLoading]);
+
+  useEffect(() => {
+    async function getTotals() {
+      if (lineItems !== undefined) {
+        setIsLoading(true);
+        const shippingRegions = await getShippingRegionsFromFirebase();
+        const shippingCost: number = shippingRegions
+          ? shippingRegions[regionValue as keyof ShippingRegions]
+          : undefined;
+
+        const subtotal: number | undefined = lineItems?.reduce(
+          (acc: number, item: CartItem) => {
+            let timesToAdd = item.quantity;
+            while (timesToAdd > 0) {
+              acc += Number(item.price);
+              timesToAdd--;
+            }
+            return acc;
+          },
+          0
+        );
+
+        const total = (subtotal || 0) + shippingCost;
+        const formattedSubtotal = subtotal?.toFixed(2);
+        const formattedTotal = total?.toFixed(2);
+
+        setTotals({ shippingCost, formattedSubtotal, formattedTotal });
+      }
+    }
+
     getTotals();
     setIsLoading(false);
-  }, [setIsLoading, setLineItems, lineItems, regionValue]);
+  }, [setIsLoading, lineItems, regionValue]);
 
   useEffect(() => {
     const region = countryValue.split("-")[1];

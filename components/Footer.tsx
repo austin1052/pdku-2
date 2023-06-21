@@ -1,5 +1,5 @@
 import Image from "next/image";
-import logo from "../assets/images/logo-text-primary.png";
+import logo from "../assets/images/logo-text-color.png";
 import styles from "../styles/Footer.module.css";
 
 export default function Footer() {

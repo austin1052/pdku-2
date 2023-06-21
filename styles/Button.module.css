@@ -1,6 +1,7 @@
 .button {
   background: unset;
-  border: 3px solid var(--mid);
+  /* border: 3px solid var(--primary); */
+  border: 3px solid var(--mid-light);
   padding: 0.4rem 0.6rem;
   border-radius: 5px;
   color: var(--primary);
@@ -12,7 +13,9 @@
  }
 
  .button:hover {
-  background-color: var(--primary-light);
+  /* background-color: var(--primary-light); */
+  border-color: var(--primary);
+
 }
 
 .button:disabled {

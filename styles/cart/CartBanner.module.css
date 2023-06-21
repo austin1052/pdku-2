@@ -85,12 +85,3 @@
   90% {right: 1rem;}
   100% {right: -100%;}
 }
-
-/* @media (min-width: 480px) {
-  @keyframes slide-in {
-    0% {right: -100%;}
-    10% {right: 1rem;}
-    90% {right: 1rem;}
-    100% {right: -100%;}
-  }
-} */

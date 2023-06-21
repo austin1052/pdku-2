@@ -12,7 +12,6 @@ export default function Navbar() {
   const [cartQuantity, setCartQuantity] = useState(0);
 
   const isMobile = useContext(MobileContext);
-  console.log(isMobile);
 
   const router = useRouter();
   const route = router.route;
@@ -48,7 +47,7 @@ export default function Navbar() {
       {route === "/" ? (
         <>
           <div></div>
-          <Link href="/merch">
+          {/* <Link href="/merch">
             <div className={styles.merchLink}>
               {isMobile ? (
                 <MapIcon className={styles.mapIcon} />
@@ -56,6 +55,9 @@ export default function Navbar() {
                 "ask me about my D&D campaign"
               )}
             </div>
+          </Link> */}
+          <Link href="/merch">
+            <div className={styles.link}>About</div>
           </Link>
           {/* <div className={styles.merchLink}>about</div> */}
         </>

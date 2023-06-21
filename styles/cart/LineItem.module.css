@@ -108,7 +108,7 @@
   background-color: var(--primary-light);
 }
 
-@media (min-width: 768px) {
+@media (width >= 768px) {
   .removeItemButton {
     margin-right: 1rem;
   }
