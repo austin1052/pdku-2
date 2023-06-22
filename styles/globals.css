@@ -34,26 +34,39 @@
 
 :root {
   /* --primary: rgb(77, 255, 178); */
-  /* --primary: rgb(61, 208, 144); */
-  /* --primary-light: rgb(61, 208, 144, 0.3); */
 
-  --primary: #d0d756;
-  --primary-light: rgb(208, 215, 86, 0.3);
+  /* green */
+  --primary: rgb(61, 208, 144);
+  --primary-light: rgb(61, 208, 144, 0.3);
+
+  /* yellow */
+  /* --primary: rgb(208, 215, 86); */
+  /* --primary-light: rgb(208, 215, 86, 0.3); */
+
+  /* purple */
+  /* --primary: rgb(156, 71, 184); */
+  /* --primary: rgb(43, 4, 92, 0.3); */
+
+  --primary-light: rgb(43, 4, 92, 0.1);
+
+/* 
   --light: rgb(253, 254, 224);
-  --white: rgb(254, 255, 246);
+  --white: rgb(254, 255, 246); */
 
 
+  --purple: rgba(34, 4, 74, 0.3);
 
 
   --secondary: rgb(168, 88, 149);
   --dark-green: rgb(13, 22, 18);
   --dark: rgb(21, 21, 21);
+  
   /* --dark: rgb(10, 18, 15); */
 
   --mid: hsl(0, 0%, 24%);
   --mid-light: rgb(51, 51, 51, 0.2);
-  /* --light: rgb(223, 251, 240); */
-  /* --white: rgb(239, 251, 247); */
+  --light: rgb(223, 251, 240);
+  --white: rgb(239, 251, 247);
 }
 
 * {
@@ -66,9 +79,10 @@ body {
   font-size: 16px;
   min-height: 100vh;
   font-family: Bitter;
+  background-color: var(--purple);
   background-image: url("../assets/images/pattern1-yellow-light.png");
   background-position: center;
-  background-size: 2rem 2rem;
+  background-size: 4rem 4rem;
   background-repeat: repeat;
 }
 

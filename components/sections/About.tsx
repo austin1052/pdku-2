@@ -15,10 +15,13 @@ export default function About() {
         ></Image>
       </div>
       <div className={styles.content}>
-        {/* <div className={styles.titleContainer}> */}
         <h2>
-          <span>A New Kind</span> <span>Of Table</span>
+          The Interactive <span className="primary">D&D</span> Live Show
         </h2>
+        {/* <div className={styles.titleContainer}> */}
+        {/* <h2>
+          <span>A New Kind</span> <span>Of Table</span>
+        </h2> */}
         {/* </div> */}
         <div className={sectionStyles.infoContainer}>
           <div>

@@ -7,6 +7,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // need currency code from IP, lookup again here
   // get shipping region from IP
 
+  // check currency code
+  // sripePriceId = prices.currency_code
+  // if undefined
+    // get USD price from stripe
+    // create new price in customers currency on stripe
+    // set prices.currency_code = new priceID
+
+  // lineItems will need a new value --> printfulItem: boolean
+  // if any items in cart have printfulItem === true, use normal shipping cost
+  // if not, use adjusted shipping
+  // stickers are shipped from NYC and will not be charged regular shipping
+
   const {country, region, stripeLineItems, cartId} = JSON.parse(req.body)
   const shippingRegions = await getShippingRegionsFromFirebase();
   const shippingCost: number = shippingRegions && shippingRegions[region as keyof ShippingRegions];
@@ -21,6 +33,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           {
             shipping_rate_data: {
               type: 'fixed_amount',
+
+              // Use IP data for currency value here
               fixed_amount: {amount: (shippingCost*100), currency: 'usd'},
               display_name: 'Flat rate shipping',
             }

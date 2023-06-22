@@ -15,8 +15,9 @@
 
 .content h2 {
   font-size: 3rem;
-  display: flex;
-  flex-direction: column;
+  /* display: flex; */
+  /* flex-direction: column; */
+  /* text-align: center; */
   margin-bottom: 1rem;
 }
 

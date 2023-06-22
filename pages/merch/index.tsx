@@ -15,10 +15,6 @@ export default function MerchPage({ allProducts }: any) {
   >();
 
   async function addItemToCart(variant: ProductVariant) {
-    // check currency code
-    // sripePriceId = prices.currency_code
-    // if undefined,
-
     const {
       // prices,
       stripePriceId,

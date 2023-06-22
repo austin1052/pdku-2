@@ -31,18 +31,6 @@ export default function Cart({ countryList }: CartProps) {
   const { lineItems, setLineItems, isLoading, setIsLoading } =
     useContext(CartContext);
 
-  const subtotal: number | undefined = lineItems?.reduce(
-    (acc: number, item: CartItem) => {
-      let timesToAdd = item.quantity;
-      while (timesToAdd > 0) {
-        acc += Number(item.price);
-        timesToAdd--;
-      }
-      return acc;
-    },
-    0
-  );
-
   useEffect(() => {
     async function getCart() {
       const token = localStorage.getItem("token");
@@ -51,7 +39,6 @@ export default function Cart({ countryList }: CartProps) {
         setLineItems(cart);
       }
     }
-    // setIsLoading(true);
     getCart();
     setIsLoading(false);
   }, [setLineItems, setIsLoading]);
@@ -102,7 +89,6 @@ export default function Cart({ countryList }: CartProps) {
     const stripeLineItems = lineItems?.map((item) => {
       return { price: item.stripePriceId, quantity: item.quantity };
     });
-    console.log(stripeLineItems);
     const res = await fetch("/api/create-checkout-session", {
       method: "POST",
       body: JSON.stringify({ country, region, stripeLineItems, cartId: token }),
